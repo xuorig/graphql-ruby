@@ -132,6 +132,27 @@ describe GraphQL::Query::Executor do
       end
     end
 
+    describe 'if max_depth is specified' do
+      let(:query_string) { %|
+        query maxDepth {
+          cheese(id: 1) {
+            flavor
+          }
+        }
+      |}
+      let(:debug) { true }
+      let(:result) { schema.execute(
+        query_string,
+        variables: variables,
+        debug: debug,
+        operation_name: operation_name,
+        max_depth: 1
+      )}
+      it 'raises when max depth is reached' do
+        assert_raises(GraphQL::QueryDepthError) { result }
+      end
+    end
+
     describe 'if nil is given for a non-null field' do
       let(:query_string) {%| query noMilk { cow { name cantBeNullButIs } }|}
       it 'turns into error message and nulls the entire selection' do

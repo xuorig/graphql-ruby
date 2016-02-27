@@ -12,6 +12,8 @@ module GraphQL
         end
 
         def result
+          execution_context.depth_check
+
           flatten_and_merge_selections(selections)
             .values
             .reduce({}) { |result, ast_node|
