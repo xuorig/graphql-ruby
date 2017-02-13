@@ -110,9 +110,19 @@ describe GraphQL::Query::Executor do
       }}
       assert_equal(expected, result)
     end
-
   end
 
+  describe "query camelized fields" do
+    let(:schema) { Camelized::Schema }
+    let(:query_string) {%| query shop { aFieldWithArguments(anArgument: "test") }|}
+
+    it "exposes fields as camelized even if they are defined otherwise" do
+      expected = {
+        "data" => { "shop" => { "aFieldWithArguments" => "test" } },
+      }
+      assert_equal(expected, result)
+    end
+  end
 
   describe "runtime errors" do
     let(:query_string) {%| query noMilk { error }|}

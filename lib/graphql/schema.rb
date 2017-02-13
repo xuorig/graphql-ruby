@@ -59,6 +59,7 @@ module GraphQL
       :object_from_id, :id_from_object,
       :default_mask,
       :cursor_encoder,
+      :camelized,
       directives: ->(schema, directives) { schema.directives = directives.reduce({}) { |m, d| m[d.name] = d; m  }},
       instrument: -> (schema, type, instrumenter) { schema.instrumenters[type] << instrumenter },
       query_analyzer: ->(schema, analyzer) { schema.query_analyzers << analyzer },
@@ -406,7 +407,8 @@ module GraphQL
 
     def build_types_map
       all_types = orphan_types + [query, mutation, subscription, GraphQL::Introspection::SchemaType]
-      @types = GraphQL::Schema::ReduceTypes.reduce(all_types.compact)
+      type_reducer = GraphQL::Schema::ReduceTypes.new(all_types.compact, camelize: @camelize)
+      @types = type_reducer.reduce
     end
   end
 end

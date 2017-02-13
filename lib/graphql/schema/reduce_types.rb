@@ -3,8 +3,14 @@ module GraphQL
   class Schema
     module ReduceTypes
       # @param types [Array<GraphQL::BaseType>] members of a schema to crawl for all member types
+      # @param camelize Boolean if the type reduce should camelize field and argument names
+      def initialize(types, camelize: false)
+        @types = types
+        @camelize = camelize
+      end
+
       # @return [GraphQL::Schema::TypeMap] `{name => Type}` pairs derived from `types`
-      def self.reduce(types)
+      def reduce
         type_map = GraphQL::Schema::TypeMap.new
         types.each do |type|
           reduce_type(type, type_map, type.name)
@@ -14,9 +20,11 @@ module GraphQL
 
       private
 
+      attr_reader :types, :camelize
+
       # Based on `type`, add members to `type_hash`.
       # If `type` has already been visited, just return the `type_hash` as-is
-      def self.reduce_type(type, type_hash, context_description)
+      def reduce_type(type, type_hash, context_description)
         if !type.is_a?(GraphQL::BaseType)
           message = "#{context_description} has an invalid type: must be an instance of GraphQL::BaseType, not #{type.class.inspect} (#{type.inspect})"
           raise GraphQL::Schema::InvalidTypeError.new(message)
@@ -32,11 +40,13 @@ module GraphQL
         end
       end
 
-      def self.crawl_type(type, type_hash, context_description)
+      def crawl_type(type, type_hash, context_description)
         if type.kind.fields?
           type.all_fields.each do |field|
+            camelize_schema_member(field) if camelize
             reduce_type(field.type, type_hash, "Field #{type.name}.#{field.name}")
             field.arguments.each do |name, argument|
+              camelize_schema_member(argument) if camelize
               reduce_type(argument.type, type_hash, "Argument #{name} on #{type.name}.#{field.name}")
             end
           end
@@ -53,16 +63,21 @@ module GraphQL
         end
         if type.kind.input_object?
           type.arguments.each do |argument_name, argument|
+            camelize_schema_member(argument) if camelize
             reduce_type(argument.type, type_hash, "Input field #{type.name}.#{argument_name}")
           end
         end
       end
 
-      def self.validate_type(type, context_description)
+      def validate_type(type, context_description)
         error_message = GraphQL::Schema::Validation.validate(type)
         if error_message
           raise GraphQL::Schema::InvalidTypeError.new("#{context_description} is invalid: #{error_message}")
         end
+      end
+
+      def camelize_schema_member(schema_member)
+
       end
     end
   end
