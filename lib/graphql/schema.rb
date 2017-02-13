@@ -8,7 +8,7 @@ require "graphql/schema/middleware_chain"
 require "graphql/schema/null_mask"
 require "graphql/schema/possible_types"
 require "graphql/schema/rescue_middleware"
-require "graphql/schema/reduce_types"
+require "graphql/schema/type_reducer"
 require "graphql/schema/timeout_middleware"
 require "graphql/schema/type_expression"
 require "graphql/schema/type_map"
@@ -59,7 +59,7 @@ module GraphQL
       :object_from_id, :id_from_object,
       :default_mask,
       :cursor_encoder,
-      :camelized,
+      :camelize,
       directives: ->(schema, directives) { schema.directives = directives.reduce({}) { |m, d| m[d.name] = d; m  }},
       instrument: -> (schema, type, instrumenter) { schema.instrumenters[type] << instrumenter },
       query_analyzer: ->(schema, analyzer) { schema.query_analyzers << analyzer },
@@ -73,7 +73,7 @@ module GraphQL
       :max_depth, :max_complexity,
       :orphan_types, :directives,
       :query_analyzers, :instrumenters, :lazy_methods,
-      :cursor_encoder
+      :cursor_encoder, :camelize
 
     # @return [MiddlewareChain] MiddlewareChain which is applied to fields during execution
     attr_accessor :middleware
@@ -407,7 +407,7 @@ module GraphQL
 
     def build_types_map
       all_types = orphan_types + [query, mutation, subscription, GraphQL::Introspection::SchemaType]
-      type_reducer = GraphQL::Schema::ReduceTypes.new(all_types.compact, camelize: @camelize)
+      type_reducer = GraphQL::Schema::TypeReducer.new(all_types.compact, camelize: @camelize)
       @types = type_reducer.reduce
     end
   end

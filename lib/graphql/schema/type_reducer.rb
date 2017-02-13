@@ -1,7 +1,10 @@
 # frozen_string_literal: true
+
+require 'active_support/inflector'
+
 module GraphQL
   class Schema
-    module ReduceTypes
+    class TypeReducer
       # @param types [Array<GraphQL::BaseType>] members of a schema to crawl for all member types
       # @param camelize Boolean if the type reduce should camelize field and argument names
       def initialize(types, camelize: false)
@@ -43,10 +46,19 @@ module GraphQL
       def crawl_type(type, type_hash, context_description)
         if type.kind.fields?
           type.all_fields.each do |field|
-            camelize_schema_member(field) if camelize
+            if camelize
+              field = camelize_field(field)
+              type.fields[field.name] = field
+            end
+
             reduce_type(field.type, type_hash, "Field #{type.name}.#{field.name}")
+
             field.arguments.each do |name, argument|
-              camelize_schema_member(argument) if camelize
+              if camelize
+                argument = camelize_argument(argument)
+                field.arguments[name] = argument
+              end
+
               reduce_type(argument.type, type_hash, "Argument #{name} on #{type.name}.#{field.name}")
             end
           end
@@ -63,7 +75,11 @@ module GraphQL
         end
         if type.kind.input_object?
           type.arguments.each do |argument_name, argument|
-            camelize_schema_member(argument) if camelize
+            if camelize
+              argument = camelize_argument(argument)
+              field.arguments[argument_name] = argument
+            end
+
             reduce_type(argument.type, type_hash, "Input field #{type.name}.#{argument_name}")
           end
         end
@@ -76,8 +92,26 @@ module GraphQL
         end
       end
 
-      def camelize_schema_member(schema_member)
+      def camelize_argument(argument)
+        defined_as = argument.name
+        camelized = ActiveSupport::Inflector.camelize(defined_as, false)
 
+        if argument.property
+          argument.redefine(name: camelized)
+        else
+          argument.redefine(name: camelized, property: defined_as)
+        end
+      end
+
+      def camelize_field(field)
+        defined_as = field.name
+        camelized = ActiveSupport::Inflector.camelize(defined_as, false)
+
+        if field.resolve_proc.is_a?(GraphQL::Field::Resolve::NameResolve)
+          field.redefine(name: camelized, property: defined_as)
+        else
+          field.redefine(name: camelized)
+        end
       end
     end
   end

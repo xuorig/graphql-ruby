@@ -23,7 +23,7 @@ module Camelized
 
   QueryType = GraphQL::ObjectType.define do
     name "Query"
-    field :shop, types.String, resolve: ->(_, _, _) { Camelized::Shop }
+    field :shop, types.String, resolve: ->(_, _, _) { Camelized::ShopObject }
   end
 
   Schema = GraphQL::Schema.define do
