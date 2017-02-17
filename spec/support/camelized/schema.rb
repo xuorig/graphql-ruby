@@ -23,12 +23,13 @@ module Camelized
 
   QueryType = GraphQL::ObjectType.define do
     name "Query"
-    field :shop, types.String, resolve: ->(_, _, _) { Camelized::ShopObject }
+    field :shop, Camelized::Shop, resolve: ->(_, _, _) { Camelized::ShopObject }
   end
 
   Schema = GraphQL::Schema.define do
+    camelize(true)
+
     query(QueryType)
     mutation(MutationType)
-    camelize(true)
   end
 end

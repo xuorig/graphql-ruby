@@ -1,9 +1,10 @@
 # frozen_string_literal: true
 require "spec_helper"
 
-describe GraphQL::Schema::ReduceTypes do
-  def reduce_types(types)
-    GraphQL::Schema::ReduceTypes.reduce(types)
+describe GraphQL::Schema::TypeReducer do
+  def reduce_types(types, camelize: false)
+    reducer = GraphQL::Schema::TypeReducer.new(types, camelize: camelize)
+    reducer.reduce
   end
 
   it "finds types from a single type and its fields" do

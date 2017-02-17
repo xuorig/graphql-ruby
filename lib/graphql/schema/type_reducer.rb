@@ -47,6 +47,8 @@ module GraphQL
         if type.kind.fields?
           type.all_fields.each do |field|
             if camelize
+              require 'byebug'
+              byebug if field.name == "shop_name"
               field = camelize_field(field)
               type.fields[field.name] = field
             end
@@ -96,10 +98,10 @@ module GraphQL
         defined_as = argument.name
         camelized = ActiveSupport::Inflector.camelize(defined_as, false)
 
-        if argument.property
+        if argument.as
           argument.redefine(name: camelized)
         else
-          argument.redefine(name: camelized, property: defined_as)
+          argument.redefine(name: camelized, as: defined_as)
         end
       end
 
@@ -108,7 +110,7 @@ module GraphQL
         camelized = ActiveSupport::Inflector.camelize(defined_as, false)
 
         if field.resolve_proc.is_a?(GraphQL::Field::Resolve::NameResolve)
-          field.redefine(name: camelized, property: defined_as)
+          field.redefine(name: camelized, property: defined_as.to_sym)
         else
           field.redefine(name: camelized)
         end

@@ -40,6 +40,7 @@ Gem::Specification.new do |s|
   s.add_development_dependency "appraisal"
   s.add_development_dependency "sequel"
   s.add_development_dependency "sqlite3"
+  s.add_development_dependency "byebug"
 
   # website stuff
   s.add_development_dependency "github-pages"
