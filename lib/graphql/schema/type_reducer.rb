@@ -47,21 +47,18 @@ module GraphQL
         if type.kind.fields?
           type.all_fields.each do |field|
             if camelize
-              require 'byebug'
-              byebug if field.name == "shop_name"
               field = camelize_field(field)
               type.fields[field.name] = field
             end
 
             reduce_type(field.type, type_hash, "Field #{type.name}.#{field.name}")
 
-            field.arguments.each do |name, argument|
-              if camelize
-                argument = camelize_argument(argument)
-                field.arguments[name] = argument
-              end
-
+            field.arguments = field.arguments.inject({}) do |memo, (name, argument)|
               reduce_type(argument.type, type_hash, "Argument #{name} on #{type.name}.#{field.name}")
+
+              argument = camelize_argument(argument) if camelize
+              memo[argument.name] = argument
+              memo
             end
           end
         end
@@ -79,7 +76,7 @@ module GraphQL
           type.arguments.each do |argument_name, argument|
             if camelize
               argument = camelize_argument(argument)
-              field.arguments[argument_name] = argument
+              field.arguments[argument.name] = argument
             end
 
             reduce_type(argument.type, type_hash, "Input field #{type.name}.#{argument_name}")

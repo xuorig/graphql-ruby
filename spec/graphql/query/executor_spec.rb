@@ -114,11 +114,10 @@ describe GraphQL::Query::Executor do
 
   describe "query camelized fields" do
     let(:schema) { Camelized::Schema }
-    let(:query_string) {%| query shop { aFieldWithArguments(anArgument: "test") }|}
+    let(:query_string) {%| query { shop { aFieldWithArguments(anArgument: "test") } }|}
 
     it "exposes fields as camelized even if they are defined otherwise" do
-      require 'byebug'
-      byebug
+      require 'byebug'; byebug;
       expected = {
         "data" => { "shop" => { "aFieldWithArguments" => "test" } },
       }
