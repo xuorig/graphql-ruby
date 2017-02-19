@@ -117,7 +117,6 @@ describe GraphQL::Query::Executor do
     let(:query_string) {%| query { shop { aFieldWithArguments(anArgument: "test") } }|}
 
     it "exposes fields as camelized even if they are defined otherwise" do
-      require 'byebug'; byebug;
       expected = {
         "data" => { "shop" => { "aFieldWithArguments" => "test" } },
       }
