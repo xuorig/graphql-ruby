@@ -45,21 +45,21 @@ module GraphQL
 
       def crawl_type(type, type_hash, context_description)
         if type.kind.fields?
-          type.all_fields.each do |field|
-            if camelize
-              field = camelize_field(field)
-              type.fields[field.name] = field
-            end
+          type.fields.keys.each do |name|
+            field = type.fields.delete(name)
+            field = camelize_field(field) if camelize
 
             reduce_type(field.type, type_hash, "Field #{type.name}.#{field.name}")
 
-            field.arguments = field.arguments.inject({}) do |memo, (name, argument)|
-              reduce_type(argument.type, type_hash, "Argument #{name} on #{type.name}.#{field.name}")
-
+            field.arguments.keys.each do |argument_name|
+              argument = field.arguments.delete(argument_name)
               argument = camelize_argument(argument) if camelize
-              memo[argument.name] = argument
-              memo
+
+              reduce_type(argument.type, type_hash, "Argument #{name} on #{type.name}.#{field.name}")
+              field.arguments[argument.name] = argument
             end
+
+            type.fields[field.name] = field
           end
         end
         if type.kind.object?
@@ -73,13 +73,12 @@ module GraphQL
           end
         end
         if type.kind.input_object?
-          type.arguments.each do |argument_name, argument|
-            if camelize
-              argument = camelize_argument(argument)
-              field.arguments[argument.name] = argument
-            end
+          type.arguments.keys.each do |argument_name|
+            argument = type.arguments.delete(argument_name)
+            argument = camelize_argument(argument) if camelize
 
             reduce_type(argument.type, type_hash, "Input field #{type.name}.#{argument_name}")
+            type.arguments[argument.name] = argument
           end
         end
       end

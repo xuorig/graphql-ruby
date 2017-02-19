@@ -10,11 +10,11 @@ describe GraphQL::Schema::TypeReducer do
   it "finds types from a single type and its fields" do
     expected = {
       "Cheese" => Dummy::CheeseType,
-      "Float" => GraphQL::FLOAT_TYPE,
-      "String" => GraphQL::STRING_TYPE,
-      "Edible" => Dummy::EdibleInterface,
-      "DairyAnimal" => Dummy::DairyAnimalEnum,
       "Int" => GraphQL::INT_TYPE,
+      "String" => GraphQL::STRING_TYPE,
+      "DairyAnimal" => Dummy::DairyAnimalEnum,
+      "Float" => GraphQL::FLOAT_TYPE,
+      "Edible" => Dummy::EdibleInterface,
       "AnimalProduct" => Dummy::AnimalProductInterface,
       "LocalProduct" => Dummy::LocalProductInterface,
     }
