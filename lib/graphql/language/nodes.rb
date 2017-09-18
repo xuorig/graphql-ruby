@@ -177,6 +177,10 @@ module GraphQL
         def slice_definition(name)
           GraphQL::Language::DefinitionSlice.slice(self, name)
         end
+
+        def with_inlined_fragments
+          GraphQL::Language::InlineFragments.new(self).inlined
+        end
       end
 
       # An enum value. The string is available as {#name}.

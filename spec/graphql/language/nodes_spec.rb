@@ -14,6 +14,34 @@ describe GraphQL::Language::Nodes::AbstractNode do
     end
   end
 
+  describe "Document" do
+    let(:query_string) {%|
+      query getCheese {
+        cheese {
+          ... cheeseFields
+        }
+      }
+
+      fragment cheeseFields on Cheese { flavor }
+    |}
+
+    let(:document) { GraphQL.parse(query_string) }
+
+    describe "#with_inlined_fragments" do
+      it "returns a new document with fragments inlined in the query" do
+        expected = GraphQL.parse(%|
+          query getCheese {
+            cheese {
+              flavor
+            }
+          }
+        |)
+
+        assert_equal expected.to_query_string, document.with_inlined_fragments.to_query_string
+      end
+    end
+  end
+
   describe "#filename" do
     it "is set after .parse_file" do
       filename = "spec/support/parser/filename_example.graphql"
