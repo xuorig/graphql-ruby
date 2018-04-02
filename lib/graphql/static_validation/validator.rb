@@ -32,21 +32,22 @@ module GraphQL
             StaticValidation::DefaultVisitor
           else
             # Create a visitor on the fly
-            custom_class = Class.new(StaticValidation::BaseVisitor)
+            custom_class = Class.new(StaticValidation::BaseVisitor) do
+              include DefinitionDependencies
+            end
+
             @rules.reverse_each do |r|
               if !r.is_a?(Class)
                 custom_class.include(r)
               end
             end
+            custom_class.include(GraphQL::InternalRepresentation::Rewrite)
             custom_class.prepend(StaticValidation::BaseVisitor::ContextMethods)
             custom_class
           end
 
           context = GraphQL::StaticValidation::ValidationContext.new(query, visitor_class)
-          rewrite = GraphQL::InternalRepresentation::Rewrite.new
-
-          rules_to_use = validate ? @rules : []
-          visitor_class = BaseVisitor.including_rules(rules_to_use)
+          visitor = context.visitor
 
           # If the caller opted out of validation, don't attach these
           if validate
