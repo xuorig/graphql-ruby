@@ -26,6 +26,10 @@ module GraphQL
         @errors = []
         # TODO it will take some finegalling but I think all this state could
         # be moved to `Visitor`
+        @visitor = StaticValidation::Visitor.new(document, self)
+        @type_stack = GraphQL::StaticValidation::TypeStack.new(schema, visitor)
+        definition_dependencies = DefinitionDependencies.mount(self)
+        @on_dependency_resolve_handlers = []
         @each_irep_node_handlers = []
         @on_dependency_resolve_handlers = []
         @visitor = visitor_class.new(document, self)

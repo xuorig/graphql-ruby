@@ -27,12 +27,12 @@ module GraphQL
           rules_to_use = validate ? @rules : []
           visitor_class = BaseVisitor.including_rules(rules_to_use)
 
-          context = GraphQL::StaticValidation::ValidationContext.new(query, visitor_class)
-
-          # Attach legacy-style rules
-          rules_to_use.each do |rule_class_or_module|
-            if rule_class_or_module.method_defined?(:validate)
-              rule_class_or_module.new.validate(context)
+          # If the caller opted out of validation, don't attach these
+          if validate
+            @rules.each do |rule_class|
+              if rule_class.method_defined?(:validate)
+                rule_class.new.validate(context)
+              end
             end
           end
 

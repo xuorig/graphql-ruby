@@ -16,7 +16,6 @@ module GraphQL
       GraphQL::StaticValidation::FragmentsAreFinite,
       GraphQL::StaticValidation::FragmentsAreNamed,
       GraphQL::StaticValidation::FragmentsAreUsed,
-      GraphQL::StaticValidation::FragmentTypesExist,
       GraphQL::StaticValidation::FragmentsAreOnCompositeTypes,
       GraphQL::StaticValidation::FragmentSpreadsArePossible,
       GraphQL::StaticValidation::FieldsAreDefinedOnType,
@@ -31,7 +30,6 @@ module GraphQL
       GraphQL::StaticValidation::VariableDefaultValuesAreCorrectlyTyped,
       GraphQL::StaticValidation::VariablesAreUsedAndDefined,
       GraphQL::StaticValidation::VariableUsagesAreAllowed,
-      GraphQL::StaticValidation::MutationRootExists,
       GraphQL::StaticValidation::SubscriptionRootExists,
     ]
   end
