@@ -53,6 +53,7 @@ module GraphQL
         @variable_context_stack.pop
       end
 
+
       # For FragmentSpreads:
       #  - find the context on the stack
       #  - mark the context as containing this spread
