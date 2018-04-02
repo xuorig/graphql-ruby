@@ -6,7 +6,7 @@ module GraphQL
     # @example Create a visitor counting certain field names
     #   class NameCounter < GraphQL::Language::Visitor
     #     def initialize(document, field_name)
-    #       super(document)
+    #       super
     #       @field_name
     #       @count = 0
     #     end
@@ -64,7 +64,8 @@ module GraphQL
       # Visit `document` and all children, applying hooks as you go
       # @return [void]
       def visit
-        @result, _nil_parent = on_node_with_modifications(@document, nil)
+        # visit_node(@document, nil)
+        on_document(@document, nil)
       end
 
       # The default implementation for visiting an AST node.
@@ -77,32 +78,22 @@ module GraphQL
       # @param parent [GraphQL::Language::Nodes::AbstractNode, nil] the previously-visited node, or `nil` if this is the root node.
       # @return [void]
       def on_abstract_node(node, parent)
-        if node == DELETE_NODE
-          # This might be passed to `super(DELETE_NODE, ...)`
-          # by a user hook, don't want to keep visiting in that case.
-          return node, parent
-        else
-          # Run hooks if there are any
-          begin_hooks_ok = @visitors.none? || begin_visit(node, parent)
-          if begin_hooks_ok
-            node.children.each do |child_node|
-              # Reassign `node` in case the child hook makes a modification
-              _new_child_node, node = on_node_with_modifications(child_node, node)
-            end
+        # Run hooks if there are any
+        begin_hooks_ok = @visitors.none? || begin_visit(node, parent)
+        if begin_hooks_ok
+          node.children.each do |child_node|
+            public_send(child_node.visit_method, child_node, node)
           end
-          @visitors.any? && end_visit(node, parent)
-          return node, parent
         end
+        @visitors.any? && end_visit(node, parent)
       end
 
       alias :on_argument :on_abstract_node
       alias :on_directive :on_abstract_node
       alias :on_directive_definition :on_abstract_node
-      alias :on_directive_location :on_abstract_node
       alias :on_document :on_abstract_node
       alias :on_enum :on_abstract_node
       alias :on_enum_type_definition :on_abstract_node
-      alias :on_enum_type_extension :on_abstract_node
       alias :on_enum_value_definition :on_abstract_node
       alias :on_field :on_abstract_node
       alias :on_field_definition :on_abstract_node
@@ -111,48 +102,20 @@ module GraphQL
       alias :on_inline_fragment :on_abstract_node
       alias :on_input_object :on_abstract_node
       alias :on_input_object_type_definition :on_abstract_node
-      alias :on_input_object_type_extension :on_abstract_node
       alias :on_input_value_definition :on_abstract_node
       alias :on_interface_type_definition :on_abstract_node
-      alias :on_interface_type_extension :on_abstract_node
       alias :on_list_type :on_abstract_node
       alias :on_non_null_type :on_abstract_node
       alias :on_null_value :on_abstract_node
       alias :on_object_type_definition :on_abstract_node
-      alias :on_object_type_extension :on_abstract_node
       alias :on_operation_definition :on_abstract_node
       alias :on_scalar_type_definition :on_abstract_node
-      alias :on_scalar_type_extension :on_abstract_node
-      alias :on_schema_definition :on_abstract_node
-      alias :on_schema_extension :on_abstract_node
       alias :on_type_name :on_abstract_node
       alias :on_union_type_definition :on_abstract_node
-      alias :on_union_type_extension :on_abstract_node
       alias :on_variable_definition :on_abstract_node
       alias :on_variable_identifier :on_abstract_node
 
       private
-
-      # Run the hooks for `node`, and if the hooks return a copy of `node`,
-      # copy `parent` so that it contains the copy of that node as a child,
-      # then return the copies
-      def on_node_with_modifications(node, parent)
-        new_node, new_parent = public_send(node.visit_method, node, parent)
-        if new_node.is_a?(Nodes::AbstractNode) && !node.equal?(new_node)
-          # The user-provided hook returned a new node.
-          new_parent = new_parent && new_parent.replace_child(node, new_node)
-          return new_node, new_parent
-        elsif new_node == DELETE_NODE
-          # The user-provided hook requested to remove this node
-          new_parent = new_parent && new_parent.delete_child(node)
-          return nil, new_parent
-        else
-          # The user-provided hook didn't make any modifications.
-          # In fact, the hook might have returned who-knows-what, so
-          # ignore the return value and use the original values.
-          return node, parent
-        end
-      end
 
       def begin_visit(node, parent)
         node_visitor = self[node.class]
