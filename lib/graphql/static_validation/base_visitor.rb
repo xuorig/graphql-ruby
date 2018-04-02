@@ -24,33 +24,6 @@ module GraphQL
         @path.dup
       end
 
-      # Build a class to visit the AST and perform validation,
-      # or use a pre-built class if rules is `ALL_RULES` or empty.
-      # @param rules [Array<Module, Class>]
-      # @return [Class] A class for validating `rules` during visitation
-      def self.including_rules(rules)
-        if rules.none?
-          NoValidateVisitor
-        elsif rules == ALL_RULES
-          DefaultVisitor
-        else
-          visitor_class = Class.new(self) do
-            include(GraphQL::StaticValidation::DefinitionDependencies)
-          end
-
-          rules.reverse_each do |r|
-            # If it's a class, it gets attached later.
-            if !r.is_a?(Class)
-              visitor_class.include(r)
-            end
-          end
-
-          visitor_class.include(GraphQL::InternalRepresentation::Rewrite)
-          visitor_class.include(ContextMethods)
-          visitor_class
-        end
-      end
-
       module ContextMethods
         def on_operation_definition(node, parent)
           object_type = @schema.root_type_for_operation(node.operation_type)
@@ -76,11 +49,11 @@ module GraphQL
         end
 
         def on_field(node, parent)
-          parent_type = @object_types.last
+          parent_type = @object_types.last.unwrap
           field_definition = @schema.get_field(parent_type, node.name)
           @field_definitions.push(field_definition)
           if !field_definition.nil?
-            next_object_type = field_definition.type.unwrap
+            next_object_type = field_definition.type
             @object_types.push(next_object_type)
           else
             @object_types.push(nil)
@@ -162,6 +135,9 @@ module GraphQL
             @schema.types.fetch(node.type.name, nil)
           else
             @object_types.last
+          end
+          if !object_type.nil?
+            object_type = object_type.unwrap
           end
           @object_types.push(object_type)
           yield(node)

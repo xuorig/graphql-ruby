@@ -2,14 +2,11 @@
 module GraphQL
   module StaticValidation
     class DefaultVisitor < BaseVisitor
-      include(GraphQL::StaticValidation::DefinitionDependencies)
-
       StaticValidation::ALL_RULES.reverse_each do |r|
         include(r)
       end
 
-      include(GraphQL::InternalRepresentation::Rewrite)
-      include(ContextMethods)
+      prepend(ContextMethods)
     end
   end
 end
