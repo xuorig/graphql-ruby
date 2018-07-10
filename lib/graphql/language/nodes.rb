@@ -292,6 +292,12 @@ module GraphQL
         end
       end
 
+      class DirectiveLocation < NameOnlyNode
+        def visit_method
+          :on_directive_location
+        end
+      end
+
       # This is the AST root for normal queries
       #
       # @example Deriving a document by parsing a string
@@ -604,6 +610,10 @@ module GraphQL
         end
 
         alias :children :directives
+
+        def visit_method
+          :on_schema_extension
+        end
       end
 
       class ScalarTypeDefinition < AbstractNode
@@ -619,6 +629,20 @@ module GraphQL
 
         def visit_method
           :on_scalar_type_definition
+        end
+      end
+
+      class ScalarTypeExtension < AbstractNode
+        attr_reader :name, :directives
+        alias :children :directives
+
+        def initialize_node(name:, directives: [])
+          @name = name
+          @directives = directives
+        end
+
+        def visit_method
+          :on_scalar_type_extension
         end
       end
 
@@ -641,6 +665,25 @@ module GraphQL
 
         def visit_method
           :on_object_type_definition
+        end
+      end
+
+      class ObjectTypeExtension < AbstractNode
+        attr_reader :name, :interfaces, :fields, :directives
+
+        def initialize_node(name:, interfaces:, fields:, directives: [])
+          @name = name
+          @interfaces = interfaces || []
+          @directives = directives
+          @fields = fields
+        end
+
+        def children
+          interfaces + fields + directives
+        end
+
+        def visit_method
+          :on_object_type_extension
         end
       end
 
@@ -710,6 +753,24 @@ module GraphQL
         end
       end
 
+      class InterfaceTypeExtension < AbstractNode
+        attr_reader :name, :fields, :directives
+
+        def initialize_node(name:, fields:, directives: [])
+          @name = name
+          @fields = fields
+          @directives = directives
+        end
+
+        def children
+          fields + directives
+        end
+
+        def visit_method
+          :on_interface_type_extension
+        end
+      end
+
       class UnionTypeDefinition < AbstractNode
         attr_reader :name, :types, :directives, :description
         include Scalars::Name
@@ -730,6 +791,24 @@ module GraphQL
         end
       end
 
+      class UnionTypeExtension < AbstractNode
+        attr_reader :name, :types, :directives
+
+        def initialize_node(name:, types:, directives: [])
+          @name = name
+          @types = types
+          @directives = directives
+        end
+
+        def children
+          types + directives
+        end
+
+        def visit_method
+          :on_union_type_extension
+        end
+      end
+
       class EnumTypeDefinition < AbstractNode
         attr_reader :name, :values, :directives, :description
         scalar_attributes :name
@@ -740,6 +819,32 @@ module GraphQL
           @values = values
           @directives = directives
           @description = description
+        end
+
+        def children
+          values + directives
+        end
+
+        def visit_method
+          :on_enum_type_extension
+        end
+      end
+
+      class EnumTypeExtension < AbstractNode
+        attr_reader :name, :values, :directives
+
+        def initialize_node(name:, values:, directives: [])
+          @name = name
+          @values = values
+          @directives = directives
+        end
+
+        def children
+          values + directives
+        end
+
+        def visit_method
+          :on_enum_type_extension
         end
       end
 
@@ -801,6 +906,10 @@ module GraphQL
 
         def children
           fields + directives
+        end
+
+        def visit_method
+          :on_input_object_type_extension
         end
       end
     end
