@@ -46,7 +46,7 @@ module GraphQL
         end
         # @return [Symbol] the method to call on {Language::Visitor} for this node
         def visit_method
-          raise NotImplementedError
+          raise NotImplementedError, "#{self.class.name}#visit_method shold return a symbol"
         end
 
         # @return [Symbol] the method to call on {Language::Visitor} for this node
@@ -585,6 +585,25 @@ module GraphQL
         def visit_method
           :on_schema_definition
         end
+
+        alias :children :directives
+      end
+
+      class SchemaExtension < AbstractNode
+        attr_reader :query, :mutation, :subscription, :directives
+
+        def initialize_node(query: nil, mutation: nil, subscription: nil, directives: [])
+          @query = query
+          @mutation = mutation
+          @subscription = subscription
+          @directives = directives
+        end
+
+        def scalars
+          [query, mutation, subscription]
+        end
+
+        alias :children :directives
       end
 
       class ScalarTypeDefinition < AbstractNode
@@ -693,8 +712,7 @@ module GraphQL
 
       class UnionTypeDefinition < AbstractNode
         attr_reader :name, :types, :directives, :description
-        scalar_attributes :name
-        child_attributes :types, :directives
+        include Scalars::Name
 
         def initialize_node(name:, types:, directives: [], description: nil)
           @name = name
@@ -765,6 +783,24 @@ module GraphQL
 
         def visit_method
           :on_input_object_type_definition
+        end
+
+        def children
+          fields + directives
+        end
+      end
+
+      class InputObjectTypeExtension < AbstractNode
+        attr_reader :name, :fields, :directives
+
+        def initialize_node(name:, fields:, directives: [])
+          @name = name
+          @fields = fields
+          @directives = directives
+        end
+
+        def children
+          fields + directives
         end
       end
     end
