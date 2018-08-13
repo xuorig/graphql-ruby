@@ -337,6 +337,11 @@ module GraphQL
         def children_method_name
           :directives
         end
+
+        # TODO generate these
+        def merge_argument(node_opts)
+          self.merge(arguments: arguments + [GraphQL::Language::Nodes::Argument.new(node_opts)])
+        end
       end
 
       class DirectiveDefinition < AbstractNode
@@ -428,9 +433,24 @@ module GraphQL
           set_attributes(name: name, arguments: arguments, directives: directives, selections: selections, alias: kwargs.fetch(:alias, nil))
         end
 
-        # Override this because default is `:fields`
-        def children_method_name
-          :selections
+        def merge_selection(node_opts)
+          self.merge(selections: selections + [GraphQL::Language::Nodes::Field.new(node_opts)])
+        end
+
+        def merge_argument(node_opts)
+          self.merge(arguments: arguments + [GraphQL::Language::Nodes::Argument.new(node_opts)])
+        end
+
+        def merge_directive(node_opts)
+          self.merge(directives: directives + [GraphQL::Language::Nodes::Directive.new(node_opts)])
+        end
+
+        def scalars
+          [name, self.alias]
+        end
+
+        def children
+          arguments + directives + selections
         end
 
         def visit_method
