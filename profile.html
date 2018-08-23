@@ -1,0 +1,710 @@
+<div id='line-profile'><pre>  CPU TIME +  IDLE TIME   FILE
+   315.1ms +    107.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/benchmark/run.rb</a>
+<div class='d-none'>   315.1ms +    107.1ms (    1) |       BIG_SCHEMA.execute(document: BIG_QUERY)
+</div>   315.1ms +    107.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/schema.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |       GraphQL::Filter.new(except: default_mask)
+     0.5ms +      0.2ms (  503) |       @type_reference_map.fetch(type_name, [])
+   315.1ms +    107.1ms (    1) |       all_results = multiplex([kwargs], max_complexity: nil, context: multiplex_context)
+   315.1ms +    107.1ms (    1) |       with_definition_error_check {
+   315.0ms +    107.1ms (    4) |         GraphQL::Execution::Multiplex.run_all(self, queries, **kwargs)
+     1.7ms +      0.5ms (  445) |       with_definition_error_check do
+     0.4ms +      0.1ms (  445) |         when GraphQL::BaseType
+     0.1ms +      0.0ms (   16) |         elsif parent_type == query &amp;&amp; (entry_point_field = introspection_system.entry_point(name: field_name))
+     0.0ms +      0.0ms (   32) |         elsif (dynamic_field = introspection_system.dynamic_field(name: field_name))
+     0.9ms +      0.3ms (   70) |       GraphQL::Schema::TypeExpression.build_type(self.types, ast_node)
+     1.4ms +      0.5ms (    2) |       @possible_types ||= GraphQL::Schema::PossibleTypes.new(self)
+     6.6ms +      2.4ms (   72) |       @possible_types.possible_types(type_defn)
+     3.3ms +      1.1ms (  366) |         call_on_type_class(member, :visible?, context, default: true)
+     0.4ms +      0.2ms (  366) |         member = if member.respond_to?(:metadata)
+     0.4ms +      0.1ms (  366) |           member.metadata[:type_class] || member
+     0.4ms +      0.1ms (  366) |         if member.respond_to?(:relay_node_type) &amp;&amp; (t = member.relay_node_type)
+     0.4ms +      0.1ms (  366) |         if member.respond_to?(method_name)
+     0.0ms +      0.0ms (   12) |           member.public_send(method_name, *args)
+</div>   315.0ms +    107.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/execution/multiplex.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         @tracers = schema.tracers + GraphQL::Tracing.tracers + (context[:tracers] || [])
+     0.2ms +      0.1ms (    3) |           queries = query_options.map { |opts| GraphQL::Query.new(schema, nil, opts) }
+   314.8ms +    107.0ms (    1) |           run_queries(schema, queries, *args)
+     0.0ms +      0.0ms (    2) |           multiplex = self.new(schema: schema, queries: queries, context: context)
+   314.8ms +    107.0ms (    1) |           multiplex.trace(&quot;execute_multiplex&quot;, { multiplex: multiplex }) do
+     0.0ms +      0.0ms (    1) |             if has_custom_strategy?(schema)
+   314.8ms +    107.0ms (    1) |               instrument_and_analyze(multiplex, max_complexity: max_complexity) do
+     0.4ms +      0.1ms (    1) |                 run_as_multiplex(multiplex)
+     0.0ms +      0.0ms (    1) |           results = queries.map do |query|
+     0.0ms +      0.0ms (    1) |             begin_query(query)
+     0.1ms +      0.0ms (    1) |           GraphQL::Execution::Execute::ExecutionFunctions.lazy_resolve_root_selection(results, { multiplex: multiplex })
+     0.3ms +      0.1ms (    5) |           results.each_with_index.map do |data_result, idx|
+     0.3ms +      0.1ms (    1) |             finish_query(data_result, query)
+     0.0ms +      0.0ms (    1) |             query.result
+     0.0ms +      0.0ms (    1) |           operation = query.selected_operation
+     0.0ms +      0.0ms (    2) |           if operation.nil? || !query.valid?
+     0.0ms +      0.0ms (    2) |           query.result_values = if data_result.equal?(NO_OPERATION)
+     0.0ms +      0.0ms (    1) |             if !query.valid?
+     0.3ms +      0.1ms (   15) |               { &quot;errors&quot; =&gt; query.static_errors.map(&amp;:to_h) }
+   314.8ms +    107.0ms (    1) |           GraphQL::Execution::Instrumentation.apply_instrumenters(multiplex) do
+   314.3ms +    106.8ms (    1) |             GraphQL::Analysis.analyze_multiplex(multiplex, multiplex_analyzers)
+</div>   314.8ms +    107.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/tracing.rb</a>
+<div class='d-none'>   942.4ms +    320.3ms (    4) |         call_tracers(0, key, metadata) { yield }
+</div>   314.8ms +    107.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/execution/instrumentation.rb</a>
+<div class='d-none'>   314.8ms +    107.0ms (    1) |         call_hooks(multiplex_instrumenters, multiplex, :before_multiplex, :after_multiplex) do
+   314.7ms +    107.0ms (    1) |           each_query_call_hooks(query_instrumenters, queries) do
+   314.7ms +    107.0ms (    1) |             call_hooks(instrumenters, query, :before_query, :after_query) {
+   314.7ms +    107.0ms (    1) |               each_query_call_hooks(instrumenters, queries, i + 1) {
+     0.0ms +      0.0ms (    2) |             instrumenters.each do |instrumenter|
+     0.0ms +      0.0ms (    2) |             ex = call_after_hooks(successful, object, after_hook_name, nil)
+     0.0ms +      0.0ms (    4) |           instrumenters.reverse.each do |instrumenter|
+</div>   314.5ms +    106.9ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/query.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |       with_prepared_ast { @document }
+     0.1ms +      0.0ms (    2) |       @filter = schema.default_filter.merge(except: except, only: only)
+     0.0ms +      0.0ms (    2) |       @context = schema.context_class.new(query: self, object: root_value, values: context)
+     0.0ms +      0.0ms (    1) |       @tracers = schema.tracers + GraphQL::Tracing.tracers + (context ? context.fetch(:tracers, []) : [])
+     0.0ms +      0.0ms (    1) |       if variables.is_a?(String)
+     0.0ms +      0.0ms (    2) |       @resolved_types_cache = Hash.new do |h1, k1|
+     0.0ms +      0.0ms (    1) |       @arguments_cache = ArgumentsCache.build(self)
+     0.0ms +      0.0ms (    1) |       if @schema.respond_to?(:visible?)
+     0.1ms +      0.0ms (    2) |         merge_filters(only: @schema.method(:visible?))
+     0.0ms +      0.0ms (   48) |       with_prepared_ast { @fragments }
+     0.0ms +      0.0ms (    2) |       @result ||= Query::Result.new(query: self, values: @result_values)
+     0.0ms +      0.0ms (    1) |       validation_errors + analysis_errors + context.errors
+     0.0ms +      0.0ms (    1) |       with_prepared_ast { @selected_operation }
+     0.8ms +      0.3ms (    1) |         with_prepared_ast {
+     0.8ms +      0.3ms (    2) |           GraphQL::Query::Variables.new(
+     0.2ms +      0.0ms (    4) |       with_prepared_ast { @validation_pipeline }
+   314.3ms +    106.8ms (    6) |       validation_pipeline.valid? &amp;&amp; analysis_errors.none?
+     1.0ms +      0.4ms ( 1111) |       with_prepared_ast { @warden }
+     0.1ms +      0.0ms (    1) |         @filter = @filter.merge(only: only, except: except)
+     0.0ms +      0.0ms (    1) |       if operation_name.nil? &amp;&amp; operations.length == 1
+     0.0ms +      0.0ms (    2) |         operations.values.first
+     0.0ms +      0.0ms (    2) |       @warden = GraphQL::Schema::Warden.new(@filter, schema: @schema, context: @context)
+     0.1ms +      0.0ms (    1) |         @document.definitions.each do |part|
+     0.0ms +      0.0ms (   42) |           when GraphQL::Language::Nodes::FragmentDefinition
+     0.0ms +      0.0ms (    1) |           when GraphQL::Language::Nodes::OperationDefinition
+     0.0ms +      0.0ms (    1) |       if @operations.any?
+     0.0ms +      0.0ms (    1) |         @selected_operation = find_operation(@operations, @operation_name)
+     0.0ms +      0.0ms (    1) |         if @selected_operation.nil?
+     0.0ms +      0.0ms (    1) |           if @operation_name.nil?
+     0.0ms +      0.0ms (    2) |       @validation_pipeline = GraphQL::Query::ValidationPipeline.new(
+     0.2ms +      0.0ms (    1) |         prepare_ast
+</div>   314.3ms +    106.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/analysis/analyze_query.rb</a>
+<div class='d-none'>   314.3ms +    106.8ms (    1) |       multiplex.trace(&quot;analyze_multiplex&quot;, { multiplex: multiplex }) do
+     0.0ms +      0.0ms (    1) |         reducer_states = analyzers.map { |r| ReducerState.new(r, multiplex) }
+   314.3ms +    106.8ms (    1) |         query_results = multiplex.queries.map do |query|
+   314.3ms +    106.8ms (    1) |           if query.valid?
+     0.0ms +      0.0ms (    1) |         multiplex_results = reducer_states.map(&amp;:finalize_reducer)
+     0.0ms +      0.0ms (    1) |         multiplex_errors = analysis_errors(multiplex_results)
+     0.0ms +      0.0ms (    2) |         multiplex.queries.each_with_index do |query, idx|
+     0.0ms +      0.0ms (    1) |           query.analysis_errors = multiplex_errors + analysis_errors(query_results[idx])
+     0.0ms +      0.0ms (    4) |       results.flatten.select { |r| r.is_a?(GraphQL::AnalysisError) }
+</div>   314.1ms +    106.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/query/validation_pipeline.rb</a>
+<div class='d-none'>   314.1ms +    106.8ms (    3) |         ensure_has_validated
+     0.0ms +      0.0ms (    1) |         ensure_has_validated
+   313.3ms +    106.5ms (    1) |           validation_result = @schema.static_validator.validate(@query, validate: @validate)
+     0.0ms +      0.0ms (    1) |           @validation_errors.concat(validation_result[:errors])
+     0.0ms +      0.0ms (    2) |           if @validation_errors.none?
+     0.8ms +      0.3ms (    2) |             @validation_errors.concat(@query.variables.errors)
+     0.0ms +      0.0ms (    2) |           if @validation_errors.none?
+     0.0ms +      0.0ms (    2) |         @valid = @validation_errors.none?
+</div>   313.2ms +    106.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/validator.rb</a>
+<div class='d-none'>   313.2ms +    106.5ms (    1) |         query.trace(&quot;validate&quot;, { validate: validate, query: query }) do
+     0.4ms +      0.1ms (    2) |           context = GraphQL::StaticValidation::ValidationContext.new(query)
+     0.0ms +      0.0ms (    2) |           rewrite = GraphQL::InternalRepresentation::Rewrite.new
+     0.1ms +      0.0ms (    1) |           rewrite.validate(context)
+     1.1ms +      0.4ms (    1) |             @rules.each do |rules|
+     1.1ms +      0.3ms (   78) |               rules.new.validate(context)
+   179.2ms +     59.0ms (    1) |           context.visitor.visit
+   132.4ms +     47.0ms (    1) |           GraphQL::InternalRepresentation::Visit.visit_each_node(rewrite_result.operation_definitions, context.each_irep_node_handlers)
+     0.0ms +      0.0ms (    1) |             irep: context.errors.any? ? nil : rewrite_result,
+</div>   179.4ms +     59.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/language/visitor.rb</a>
+<div class='d-none'>     0.9ms +      0.4ms ( 1060) |         @visitors[node_class] ||= NodeVisitor.new
+   179.2ms +     59.0ms (    1) |         visit_node(@document, nil)
+   100.9ms +     34.3ms (  435) |         begin_hooks_ok = begin_visit(node, parent)
+   125.3ms +     40.7ms ( 1255) |           node.children.each { |child| visit_node(child, node) }
+    75.0ms +     23.6ms (  435) |         end_visit(node, parent)
+     1.6ms +      0.6ms (  870) |         node_visitor = self[node.class]
+    97.5ms +     33.0ms (  870) |         self.class.apply_hooks(node_visitor.enter, node, parent)
+     1.6ms +      0.6ms (  870) |         node_visitor = self[node.class]
+    71.7ms +     22.3ms (  870) |         self.class.apply_hooks(node_visitor.leave, node, parent)
+   167.1ms +     54.5ms ( 5546) |         hooks.reduce(true) { |memo, proc| memo &amp;&amp; (proc.call(node, parent) != SKIP) }
+</div>   140.9ms +     49.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/internal_representation/node.rb</a>
+<div class='d-none'>     1.3ms +      0.5ms ( 1621) |           if @scoped_children.any?
+     0.6ms +      0.2ms (  418) |             new_tc = Hash.new(&amp;DEFAULT_TYPED_CHILDREN)
+     1.8ms +      0.6ms (  418) |             all_object_types = Set.new
+    13.9ms +      4.8ms (  887) |             scoped_children.each_key { |t| all_object_types.merge(@query.possible_types(t)) }
+     7.3ms +      2.5ms (  627) |             all_object_types &amp;= @query.possible_types(@return_type.unwrap)
+    72.2ms +     26.2ms (  209) |             all_object_types.each do |t|
+    70.8ms +     25.8ms (  588) |               new_tc[t] = get_typed_children(t)
+     1.3ms +      0.4ms (  882) |         @scoped_children = Hash.new { |h1, k1| h1[k1] = {} }
+     1.1ms +      0.5ms ( 1620) |         super
+     8.1ms +      2.8ms ( 5198) |         @scoped_children = other_node.scoped_children.dup
+     6.7ms +      2.6ms ( 4860) |         @ast_nodes = other_node.ast_nodes.dup
+     6.6ms +      2.7ms ( 4860) |         @definitions = other_node.definitions.dup
+     8.2ms +      2.5ms ( 4351) |           @ast_nodes |= new_parent.ast_nodes
+     6.9ms +      2.1ms ( 3664) |           @definitions |= new_parent.definitions
+     0.4ms +      0.2ms (  520) |         if new_sc.any?
+     0.1ms +      0.0ms (   51) |           scope ||= Scope.new(@query, @return_type.unwrap)
+    43.7ms +     14.9ms (   65) |           new_sc.each do |obj_type, new_fields|
+    24.9ms +      9.1ms (  147) |             inner_scope = scope.enter(obj_type)
+    18.5ms +      5.7ms (  147) |             inner_scope.each do |scoped_type|
+     0.2ms +      0.1ms (  350) |               prev_fields = @scoped_children[scoped_type]
+    17.0ms +      5.2ms (  350) |               new_fields.each do |name, new_node|
+    15.9ms +      5.0ms (  342) |                   prev_node.deep_merge_node(new_node)
+    70.1ms +     25.5ms (  294) |         @scoped_children.each do |scope_type, scope_nodes|
+    25.4ms +     10.0ms ( 2234) |           if GraphQL::Execution::Typecast.subtype?(scope_type, obj_type)
+    41.9ms +     14.7ms (  424) |             scope_nodes.each do |name, new_node|
+     2.6ms +      0.8ms (  130) |                 prev_node.deep_merge_node(new_node)
+    36.1ms +     13.2ms ( 4860) |                 copied_node = new_node.dup
+</div>   136.4ms +     48.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/.rbenv/versions/2.4.0/lib/ruby/2.4.0/set.rb</a>
+<div class='d-none'>     2.3ms +      0.8ms ( 1638) |     @hash ||= Hash.new(false)
+     0.6ms +      0.3ms (  819) |     enum.nil? and return
+     6.1ms +      2.2ms (  298) |       merge(enum)
+     0.7ms +      0.3ms (  894) |     if enum.respond_to?(:each_entry)
+     9.4ms +      3.1ms ( 1788) |       enum.each_entry(&amp;block) if block
+     0.4ms +      0.2ms (  581) |     @hash[o]
+   160.0ms +     56.2ms (  974) |     @hash.each_key(&amp;block)
+     0.6ms +      0.3ms (  862) |     @hash[o] = true
+     1.1ms +      0.3ms ( 1370) |     if enum.instance_of?(self.class)
+    11.5ms +      4.1ms ( 2662) |       do_with_enum(enum) { |o| add(o) }
+     1.9ms +      0.7ms (  627) |     n = self.class.new
+     5.2ms +      1.8ms (  797) |     do_with_enum(enum) { |o| n.add(o) if include?(o) }
+     0.0ms +      0.0ms (   48) |     if self.equal?(other)
+     0.1ms +      0.0ms (   96) |     elsif other.instance_of?(self.class)
+     0.0ms +      0.0ms (   48) |     elsif other.is_a?(Set) &amp;&amp; self.size == other.size
+</div>   132.4ms +     47.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/internal_representation/visit.rb</a>
+<div class='d-none'>   132.4ms +     47.0ms (    1) |         operations.each do |op_name, op_node|
+   132.4ms +     47.0ms (    2) |           op_node.typed_children.each do |obj_type, children|
+   132.3ms +     46.9ms (    1) |             children.each do |name, op_child_node|
+   132.3ms +     46.9ms (    1) |               each_node(op_child_node) do |node|
+    19.4ms +      6.5ms ( 1620) |                 for h in handlers
+   973.7ms +    345.5ms ( 3240) |         node.typed_children.each do |obj_type, children|
+   868.2ms +    307.6ms (  293) |           children.each do |name, node|
+   866.4ms +    306.9ms ( 1619) |             each_node(node) { |n| yield(n) }
+</div>    62.6ms +     20.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/internal_representation/rewrite.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |         @document = InternalRepresentation::Document.new
+     0.4ms +      0.2ms (  146) |         spread_parents = Hash.new { |h, k| h[k] = Set.new }
+     0.0ms +      0.0ms (    2) |         skip_nodes = Set.new
+     0.0ms +      0.0ms (    2) |         visit_op = VisitDefinition.new(context, @document.operation_definitions, nodes_stack, scopes_stack)
+     0.0ms +      0.0ms (    2) |         visitor[Nodes::OperationDefinition].enter &lt;&lt; visit_op.method(:enter)
+     0.0ms +      0.0ms (    2) |         visitor[Nodes::OperationDefinition].leave &lt;&lt; visit_op.method(:leave)
+     0.0ms +      0.0ms (    2) |         visit_frag = VisitDefinition.new(context, @document.fragment_definitions, nodes_stack, scopes_stack)
+     0.0ms +      0.0ms (    2) |         visitor[Nodes::FragmentDefinition].enter &lt;&lt; visit_frag.method(:enter)
+     0.0ms +      0.0ms (    2) |         visitor[Nodes::FragmentDefinition].leave &lt;&lt; visit_frag.method(:leave)
+     0.0ms +      0.0ms (    1) |         visitor[Nodes::InlineFragment].enter &lt;&lt; -&gt;(ast_node, ast_parent) {
+     0.0ms +      0.0ms (    1) |         visitor[Nodes::InlineFragment].leave &lt;&lt; -&gt;(ast_node, ast_parent) {
+     0.0ms +      0.0ms (    1) |         visitor[Nodes::Field].enter &lt;&lt; -&gt;(ast_node, ast_parent) {
+     0.7ms +      0.3ms (  287) |           if skip?(ast_node, query)
+     1.6ms +      0.5ms (  574) |           if skip_nodes.none?
+     0.2ms +      0.1ms (  287) |             parent_nodes = nodes_stack.last
+     0.8ms +      0.3ms (  287) |             field_defn = context.field_definition
+     0.2ms +      0.1ms (  287) |             if field_defn.nil?
+     0.2ms +      0.1ms (  287) |               field_return_type = field_defn.type
+     5.8ms +      1.4ms (  574) |               scopes_stack.last.each do |scope_type|
+     5.1ms +      1.1ms (  287) |                 parent_nodes.each do |parent_node|
+     3.2ms +      0.8ms (  859) |                   node = parent_node.scoped_children[scope_type][node_name] ||= Node.new(
+     2.7ms +      0.9ms (  861) |               new_scope = Scope.new(query, field_return_type.unwrap)
+     0.2ms +      0.1ms (  287) |             nodes_stack.push(next_nodes)
+     0.2ms +      0.1ms (  287) |             scopes_stack.push(new_scope)
+     0.0ms +      0.0ms (    1) |         visitor[Nodes::Field].leave &lt;&lt; -&gt;(ast_node, ast_parent) {
+     1.6ms +      0.5ms (  574) |           if skip_nodes.none?
+     0.3ms +      0.1ms (  287) |             nodes_stack.pop
+     0.2ms +      0.1ms (  287) |             scopes_stack.pop
+     1.0ms +      0.3ms (  287) |           if skip_nodes.include?(ast_node)
+     0.0ms +      0.0ms (    1) |         visitor[Nodes::FragmentSpread].enter &lt;&lt; -&gt;(ast_node, ast_parent) {
+     0.4ms +      0.1ms (  144) |           if skip_nodes.none? &amp;&amp; !skip?(ast_node, query)
+     0.9ms +      0.3ms (  144) |             spread_parents[ast_node].merge(nodes_stack.last)
+     0.1ms +      0.0ms (   96) |             spread_scopes[ast_node] = scopes_stack.last
+     0.0ms +      0.0ms (    1) |         context.on_dependency_resolve do |defn_ast_node, spread_ast_nodes, frag_ast_node|
+    43.1ms +     14.7ms (   47) |             spread_ast_nodes.each do |spread_ast_node|
+     0.0ms +      0.0ms (   48) |               parent_nodes = spread_parents[spread_ast_node]
+     0.0ms +      0.0ms (   48) |               parent_scope = spread_scopes[spread_ast_node]
+    42.8ms +     14.6ms (   48) |               parent_nodes.each do |parent_node|
+    42.6ms +     14.6ms (   48) |                 parent_node.deep_merge_node(fragment_node, scope: parent_scope, merge_self: false)
+     0.2ms +      0.1ms (  335) |         dir.any? &amp;&amp; !GraphQL::Execution::DirectiveChecks.include?(dir, query)
+     0.4ms +      0.1ms (  126) |           owner_type = @context.type_definition &amp;&amp; @context.type_definition.unwrap
+     0.9ms +      0.1ms (   84) |           node = Node.new(
+     0.2ms +      0.1ms (   42) |             return_type: @context.type_definition,
+     0.4ms +      0.1ms (  126) |           @scopes_stack.push(Scope.new(@query, owner_type))
+     0.0ms +      0.0ms (   42) |           @nodes_stack.push([node])
+     0.0ms +      0.0ms (   42) |           @nodes_stack.pop
+     0.0ms +      0.0ms (   42) |           @scopes_stack.pop
+</div>    47.9ms +     16.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/validation_context.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |         @literal_validator = LiteralValidator.new(context: query.context)
+     0.0ms +      0.0ms (    3) |         @visitor = GraphQL::Language::Visitor.new(document)
+     0.2ms +      0.1ms (    2) |         @type_stack = GraphQL::StaticValidation::TypeStack.new(schema, visitor)
+     0.1ms +      0.0ms (    1) |         definition_dependencies = DefinitionDependencies.mount(self)
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::Document].leave &lt;&lt; -&gt;(_n, _p) {
+    45.8ms +     15.6ms (    1) |           @dependencies = definition_dependencies.dependency_map { |defn, spreads, frag|
+    43.3ms +     14.8ms (   47) |             @on_dependency_resolve_handlers.each { |h| h.call(defn, spreads, frag) }
+     0.2ms +      0.1ms (  254) |         object_types.last
+     0.7ms +      0.3ms (  927) |         @type_stack.field_definitions.last
+     0.8ms +      0.3ms (  519) |         @type_stack.path.dup
+</div>    47.9ms +     16.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/definition_dependencies.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |         deps = self.new
+     0.1ms +      0.0ms (    1) |         deps.mount(visitor)
+     0.4ms +      0.1ms (  125) |         @dependent_definitions = Hash.new { |h, k| h[k] = Set.new }
+     0.1ms +      0.0ms (   41) |         @immediate_dependencies = Hash.new { |h, k| h[k] = Set.new }
+    45.8ms +     15.6ms (    1) |         @dependency_map ||= resolve_dependencies(&amp;block)
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::Document] &lt;&lt; -&gt;(node, prev_node) {
+     0.2ms +      0.1ms (    1) |           node.definitions.each do |definition|
+     0.0ms +      0.0ms (   42) |             when GraphQL::Language::Nodes::OperationDefinition
+     0.0ms +      0.0ms (   41) |             when GraphQL::Language::Nodes::FragmentDefinition
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::OperationDefinition] &lt;&lt; -&gt;(node, prev_node) {
+     0.0ms +      0.0ms (    4) |           @node_paths[node] = NodeWithPath.new(node, context.path)
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::OperationDefinition].leave &lt;&lt; -&gt;(node, prev_node) {
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::FragmentDefinition] &lt;&lt; -&gt;(node, prev_node) {
+     0.4ms +      0.1ms (  164) |           @node_paths[node] = NodeWithPath.new(node, context.path)
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::FragmentDefinition].leave &lt;&lt; -&gt;(node, prev_node) {
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::FragmentSpread] &lt;&lt; -&gt;(node, prev_node) {
+     0.5ms +      0.2ms (  192) |           @node_paths[node] = NodeWithPath.new(node, context.path)
+     0.2ms +      0.1ms (   96) |           @dependent_definitions[@fragment_definitions[node.name]] &lt;&lt; current_parent
+     0.2ms +      0.1ms (   96) |           @immediate_dependencies[current_parent] &lt;&lt; node
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (   44) |           @dependencies = Hash.new { |h, k| h[k] = [] }
+     0.0ms +      0.0ms (    2) |           @unmet_dependencies = Hash.new { |h, k| h[k] = [] }
+     0.1ms +      0.1ms (  141) |           @dependencies[definition_node]
+     0.0ms +      0.0ms (    2) |         dependency_map = DependencyMap.new
+     0.1ms +      0.0ms (   57) |         independent_fragment_nodes = @fragment_definitions.values - @immediate_dependencies.keys
+     0.0ms +      0.0ms (   42) |         while fragment_node = independent_fragment_nodes.pop
+     0.1ms +      0.0ms (   82) |           @immediate_dependencies.delete(fragment_node)
+     0.0ms +      0.0ms (   41) |           fragment_usages = @dependent_definitions[fragment_node]
+     0.2ms +      0.1ms (   82) |           if fragment_usages.none?
+    45.0ms +     15.3ms (   41) |             fragment_usages.each do |definition_node|
+     0.2ms +      0.1ms (   47) |               dependency_map[definition_node] &lt;&lt; fragment_node
+     0.4ms +      0.1ms (  141) |               dependency_map[definition_node].concat(dependency_map[fragment_node])
+     0.0ms +      0.0ms (   47) |               deps = @immediate_dependencies[definition_node]
+     0.2ms +      0.1ms (   94) |               removed, remaining = deps.partition { |spread| spread.name == fragment_node.name }
+     0.0ms +      0.0ms (   47) |               @immediate_dependencies[definition_node] = remaining
+     0.0ms +      0.0ms (   47) |               if block_given?
+     0.1ms +      0.0ms (  107) |               if remaining.none? &amp;&amp; definition_node.is_a?(GraphQL::Language::Nodes::FragmentDefinition)
+     0.0ms +      0.0ms (    1) |         @immediate_dependencies.each do |defn_node, deps|
+     0.0ms +      0.0ms (    1) |           deps.each do |spread|
+     0.0ms +      0.0ms (    2) |           if deps.none?
+     0.0ms +      0.0ms (    2) |             @immediate_dependencies.delete(defn_node)
+     0.0ms +      0.0ms (    2) |         cyclical_nodes = @immediate_dependencies.keys.map { |n| @node_paths[n] }
+     0.0ms +      0.0ms (    1) |         cyclical_nodes.compact!
+     0.0ms +      0.0ms (    1) |         dependency_map.cyclical_definitions.concat(cyclical_nodes)
+</div>    46.2ms +     16.6ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/schema/warden.rb</a>
+<div class='d-none'>    11.3ms +      4.0ms (  367) |         @visibility_cache = read_through { |m| filter.call(m, context) }
+     0.0ms +      0.0ms (    1) |         @visible_types ||= read_through do |name|
+     0.1ms +      0.0ms (   64) |           type_defn = @schema.types.fetch(name, nil)
+    10.7ms +      3.8ms (   32) |           if type_defn &amp;&amp; visible_type?(type_defn)
+     0.0ms +      0.0ms (    1) |         @visible_parent_fields ||= read_through do |type|
+     0.2ms +      0.1ms (   40) |           read_through do |f_name|
+     0.9ms +      0.3ms (  158) |             field_defn = @schema.get_field(type, f_name)
+    14.4ms +      5.1ms (  158) |             if field_defn &amp;&amp; visible_field?(field_defn)
+     0.2ms +      0.1ms (  287) |         @visible_parent_fields[parent_type][field_name]
+    16.6ms +      6.0ms (  415) |         @visible_possible_types ||= read_through { |type_defn| @schema.possible_types(type_defn).select { |t| visible_type?(t) } }
+     0.5ms +      0.2ms (  656) |         @visible_possible_types[type_defn]
+     2.4ms +      0.9ms (   57) |         @visible_arguments ||= read_through { |o| o.arguments.each_value.select { |a| visible_field?(a) } }
+     0.0ms +      0.0ms (   22) |         @visible_arguments[argument_owner]
+     0.7ms +      0.2ms (  215) |         @visible_interfaces ||= read_through { |t| t.interfaces.select { |i| visible?(i) } }
+     0.2ms +      0.1ms (  221) |         @visible_interfaces[obj_type]
+     0.0ms +      0.0ms (    2) |         root_type = @schema.root_type_for_operation(op_name)
+     0.1ms +      0.1ms (    1) |         if root_type &amp;&amp; visible?(root_type)
+    15.9ms +      5.6ms (  760) |         visible?(field_defn) &amp;&amp; visible_type?(field_defn.type.unwrap)
+     5.8ms +      2.0ms (  510) |         return false unless visible?(type_defn)
+     5.8ms +      2.1ms (  510) |         return true if root_type?(type_defn)
+     0.4ms +      0.2ms (  506) |         return true if type_defn.introspection?
+     0.8ms +      0.3ms ( 1012) |         if type_defn.kind.union?
+     0.2ms +      0.1ms (    6) |           visible_possible_types?(type_defn) &amp;&amp; (referenced?(type_defn) || orphan_type?(type_defn))
+     0.7ms +      0.3ms ( 1006) |         elsif type_defn.kind.interface?
+     7.6ms +      2.8ms (    3) |           visible_possible_types?(type_defn)
+    10.1ms +      3.6ms (  721) |           referenced?(type_defn) || visible_abstract_type?(type_defn)
+     4.7ms +      1.6ms ( 2032) |         @schema.root_types.include?(type_defn)
+     1.8ms +      0.6ms ( 1006) |         members = @schema.references_to(type_defn.unwrap.name)
+     3.8ms +      1.2ms (  785) |         members.any? { |m| visible?(m) }
+     0.3ms +      0.2ms (  442) |         type_defn.kind.object? &amp;&amp; (
+     1.8ms +      0.6ms (  442) |             interfaces(type_defn).any? ||
+     7.8ms +      2.9ms (   18) |         @schema.possible_types(type_defn).any? { |t| visible_type?(t) }
+     0.8ms +      0.4ms ( 1109) |         @visibility_cache[member]
+     0.6ms +      0.2ms (  614) |         Hash.new { |h, k| h[k] = yield(k) }
+</div>    27.7ms +     10.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/internal_representation/scope.rb</a>
+<div class='d-none'>     0.4ms +      0.2ms (  455) |         when Array
+     0.4ms +      0.1ms (  448) |         when GraphQL::BaseType
+     0.3ms +      0.1ms (  294) |         when nil
+     0.5ms +      0.2ms (  256) |         when @type
+     0.2ms +      0.1ms (  218) |         when GraphQL::UnionType, GraphQL::InterfaceType
+    11.7ms +      4.2ms (  785) |           new_types = @query.possible_types(other_type_defn) &amp; concrete_types
+     0.0ms +      0.0ms (   14) |           Scope.new(@query, new_types)
+     0.1ms +      0.0ms (  102) |         when GraphQL::BaseType
+    10.3ms +      3.8ms ( 2131) |           if concrete_types.include?(other_type_defn)
+     0.6ms +      0.2ms (  204) |             Scope.new(@query, other_type_defn)
+     3.4ms +      1.0ms (    7) |           @types.each { |t| yield(t) }
+     6.7ms +      2.5ms (    5) |           @query.possible_types(@type)
+</div>    22.0ms +      7.6ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fields_are_defined_on_type.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::Field] &lt;&lt; -&gt;(node, parent) {
+     0.2ms +      0.1ms (  287) |           parent_type = context.object_types[-2]
+     0.3ms +      0.1ms (  287) |           parent_type = parent_type.unwrap
+    21.5ms +      7.4ms (  287) |           validate_field(context, node, parent_type, parent)
+     0.0ms +      0.0ms (    1) |         }
+    18.0ms +      6.2ms (  574) |         field = context.warden.get_field(parent_type, ast_field.name)
+     0.2ms +      0.1ms (  287) |         if field.nil?
+</div>    16.2ms +      5.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fields_will_merge.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.each_irep_node do |node|
+     9.4ms +      3.2ms (  894) |             defn_names = Set.new(node.ast_nodes.map(&amp;:name))
+     0.3ms +      0.1ms (  298) |             if defn_names.size &gt; 1
+     3.0ms +      1.1ms (  298) |             args = node.ast_nodes.map do |n|
+     1.1ms +      0.5ms ( 1505) |               if n.arguments.any?
+     3.5ms +      1.1ms ( 1803) |             args.uniq!
+</div>    15.1ms +      5.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/execution/typecast.rb</a>
+<div class='d-none'>     5.7ms +      2.1ms ( 2234) |         if parent_type == child_type
+     1.6ms +      0.6ms ( 1940) |         elsif child_type.is_a?(GraphQL::NonNullType)
+     1.6ms +      0.6ms ( 1940) |           when GraphQL::InterfaceType
+     1.5ms +      0.6ms ( 1940) |           when GraphQL::UnionType
+     3.3ms +      1.3ms ( 1165) |             parent_type.possible_types.include?(child_type)
+     1.4ms +      0.5ms ( 1810) |           when GraphQL::ListType
+</div>    10.7ms +      3.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/filter.rb</a>
+<div class='d-none'>    11.4ms +      4.1ms (  732) |       (@only ? @only.call(member, ctx) : true) &amp;&amp;
+     0.3ms +      0.1ms (  366) |       (@except ? !@except.call(member, ctx) : true)
+     0.0ms +      0.0ms (    5) |       onlies = [self].concat(Array(only))
+     0.0ms +      0.0ms (    2) |       merged_only = MergedOnly.build(onlies)
+     0.0ms +      0.0ms (    6) |       merged_except = MergedExcept.build(Array(except))
+     0.0ms +      0.0ms (    6) |       self.class.new(only: merged_only, except: merged_except)
+     9.8ms +      3.4ms ( 1098) |         @first.call(member, ctx) &amp;&amp; @second.call(member, ctx)
+     0.0ms +      0.0ms (    8) |         when 0
+     0.0ms +      0.0ms (    8) |         when 1
+     0.0ms +      0.0ms (   10) |           onlies.reduce { |memo, only| self.new(memo, only) }
+</div>    10.6ms +      3.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragment_types_exist.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         FRAGMENTS_ON_TYPES.each do |node_class|
+    10.6ms +      3.8ms (   45) |           context.visitor[node_class] &lt;&lt; -&gt;(node, parent) { validate_type_exists(node, context) }
+    10.0ms +      3.6ms (   82) |         type = context.warden.get_type(type_name)
+     0.0ms +      0.0ms (   41) |         if type.nil?
+</div>     9.5ms +      3.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/type_stack.rb</a>
+<div class='d-none'>     0.2ms +      0.1ms (    1) |         PUSH_STRATEGIES.each do |node_class, strategy|
+     0.1ms +      0.0ms (   21) |           visitor[node_class].enter &lt;&lt; EnterWithStrategy.new(self, strategy)
+     0.0ms +      0.0ms (   21) |           visitor[node_class].leave &lt;&lt; LeaveWithStrategy.new(self, strategy)
+     0.1ms +      0.0ms (   82) |             stack.schema.types.fetch(node.type.name, nil)
+     0.0ms +      0.0ms (   41) |           if !object_type.nil?
+     0.0ms +      0.0ms (   41) |             object_type = object_type.unwrap
+     0.0ms +      0.0ms (   41) |           stack.object_types.push(object_type)
+     0.1ms +      0.0ms (   41) |           push_path_member(stack, node)
+     0.0ms +      0.0ms (   41) |           stack.object_types.pop
+     0.0ms +      0.0ms (   41) |           stack.path.pop
+     0.0ms +      0.0ms (   41) |           stack.path.push(&quot;fragment #{node.name}&quot;)
+     0.0ms +      0.0ms (    1) |           object_type = stack.schema.root_type_for_operation(node.operation_type)
+     0.0ms +      0.0ms (    1) |           stack.object_types.push(object_type)
+     0.0ms +      0.0ms (    1) |           stack.path.push(&quot;#{node.operation_type}#{node.name ? &quot; #{node.name}&quot; : &quot;&quot;}&quot;)
+     0.0ms +      0.0ms (    1) |           stack.object_types.pop
+     0.0ms +      0.0ms (    1) |           stack.path.pop
+     0.2ms +      0.1ms (  287) |           parent_type = stack.object_types.last
+     0.3ms +      0.1ms (  287) |           parent_type = parent_type.unwrap
+     1.6ms +      0.5ms (  287) |           field_definition = stack.schema.get_field(parent_type, node.name)
+     0.2ms +      0.1ms (  287) |           stack.field_definitions.push(field_definition)
+     0.2ms +      0.1ms (  287) |           if !field_definition.nil?
+     0.3ms +      0.1ms (  286) |             next_object_type = field_definition.type
+     0.2ms +      0.1ms (  287) |             stack.object_types.push(next_object_type)
+     0.2ms +      0.1ms (  287) |           stack.path.push(node.alias || node.name)
+     0.2ms +      0.1ms (  287) |           stack.field_definitions.pop
+     0.2ms +      0.1ms (  287) |           stack.object_types.pop
+     0.2ms +      0.1ms (  287) |           stack.path.pop
+     0.0ms +      0.0ms (   22) |           if stack.argument_definitions.last
+     0.0ms +      0.0ms (   22) |           elsif stack.directive_definitions.last
+     0.0ms +      0.0ms (   22) |           elsif stack.field_definitions.last
+     0.0ms +      0.0ms (   22) |             argument_defn = stack.field_definitions.last.arguments[node.name]
+     0.0ms +      0.0ms (   22) |           stack.argument_definitions.push(argument_defn)
+     0.0ms +      0.0ms (   22) |           stack.path.push(node.name)
+     0.0ms +      0.0ms (   22) |           stack.argument_definitions.pop
+     0.0ms +      0.0ms (   22) |           stack.path.pop
+     0.0ms +      0.0ms (   48) |           stack.path.push(&quot;... #{node.name}&quot;)
+     0.0ms +      0.0ms (   48) |           stack.path.pop
+     7.3ms +      2.6ms (  399) |           @strategy.push(@stack, node)
+     2.0ms +      0.8ms (  399) |           @strategy.pop(@stack, node)
+</div>     9.3ms +      3.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/.rbenv/versions/2.4.0/lib/ruby/2.4.0/forwardable.rb</a>
+<div class='d-none'>     1.8ms +      0.7ms (  927) |             #{accessor}
+     7.5ms +      2.6ms ( 6204) |         end
+</div>     7.5ms +      2.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/schema/possible_types.rb</a>
+<div class='d-none'>     1.3ms +      0.5ms (  701) |         @object_types = schema.types.values.select { |type| type.kind.object? }
+     0.0ms +      0.0ms (    2) |         @interface_implementers = Hash.new do |hash, key|
+     5.9ms +      2.2ms ( 2304) |           hash[key] = @object_types.select { |type| type.interfaces.include?(key) }.sort_by(&amp;:name)
+     0.1ms +      0.0ms (   72) |         when Module
+     0.1ms +      0.0ms (   72) |         when GraphQL::UnionType
+     0.0ms +      0.0ms (    6) |           type_defn.possible_types
+     0.1ms +      0.0ms (   66) |         when GraphQL::InterfaceType
+     0.0ms +      0.0ms (    6) |           @interface_implementers[type_defn]
+     0.0ms +      0.0ms (   60) |         when GraphQL::BaseType
+</div>     7.2ms +      2.6ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragment_spreads_are_possible.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::InlineFragment] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::FragmentSpread] &lt;&lt; -&gt;(node, parent) {
+     0.1ms +      0.0ms (   96) |           fragment_parent = context.object_types.last
+     0.5ms +      0.2ms (  144) |           spreads_to_validate &lt;&lt; FragmentSpread.new(node: node, parent_type: fragment_parent, path: context.path)
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Document].leave &lt;&lt; -&gt;(doc_node, parent) {
+     6.6ms +      2.4ms (    1) |           spreads_to_validate.each do |frag_spread|
+     0.1ms +      0.0ms (   48) |             frag_node = context.fragments[frag_spread.node.name]
+     0.2ms +      0.1ms (   96) |               fragment_child = context.warden.get_type(fragment_child_name)
+     5.5ms +      2.0ms (   48) |                 validate_fragment_in_scope(frag_spread.parent_type, fragment_child, frag_spread.node, context, frag_spread.path)
+     0.1ms +      0.0ms (   96) |         if !child_type.kind.fields?
+     0.4ms +      0.2ms (  144) |         parent_types = context.warden.possible_types(parent_type.unwrap)
+     1.4ms +      0.5ms (  144) |         child_types = context.warden.possible_types(child_type.unwrap)
+     2.5ms +      0.9ms (  953) |         if child_types.none? { |c| parent_types.include?(c) }
+</div>     5.8ms +      2.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/base_type.rb</a>
+<div class='d-none'>     5.3ms +      2.3ms ( 7114) |       other.is_a?(GraphQL::BaseType) &amp;&amp; self.name == other.name
+     0.0ms +      0.0ms (    2) |       GraphQL::NonNullType.new(of_type: self)
+     0.5ms +      0.2ms (  684) |         self.of_type.unwrap
+     0.0ms +      0.0ms (    2) |       when Proc
+     0.0ms +      0.0ms (    1) |         resolve_related_type(type_arg.call)
+     0.0ms +      0.0ms (    1) |       when String
+     0.0ms +      0.0ms (    1) |         if type_arg.respond_to?(:graphql_definition)
+     0.0ms +      0.0ms (    1) |           type_arg.graphql_definition
+</div>     5.1ms +      1.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/required_arguments_are_present.rb</a>
+<div class='d-none'>     5.1ms +      1.8ms (  289) |         v[GraphQL::Language::Nodes::Field] &lt;&lt; -&gt;(node, parent) { validate_field(node, context) }
+     0.0ms +      0.0ms (    2) |         v[GraphQL::Language::Nodes::Directive] &lt;&lt; -&gt;(node, parent) { validate_directive(node, context) }
+     0.8ms +      0.3ms (  287) |         defn = context.field_definition
+     3.6ms +      1.3ms (  287) |         assert_required_args(ast_field, defn, context)
+     0.3ms +      0.1ms (  287) |         present_argument_names = ast_node.arguments.map(&amp;:name)
+     0.7ms +      0.3ms (  715) |           .select { |a| a.type.kind.non_null? }
+     0.3ms +      0.1ms (  287) |           .map(&amp;:name)
+     0.3ms +      0.1ms (  287) |         missing_names = required_argument_names - present_argument_names
+     0.2ms +      0.1ms (  287) |         if missing_names.any?
+</div>     4.9ms +      1.8ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fields_have_appropriate_selections.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Field] &lt;&lt; -&gt;(node, parent)  {
+     0.8ms +      0.3ms (  287) |           field_defn = context.field_definition
+     4.1ms +      1.6ms (  861) |           validate_field_selections(node, field_defn.type.unwrap, context)
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::OperationDefinition] &lt;&lt; -&gt;(node, parent)  {
+     0.0ms +      0.0ms (    2) |           validate_field_selections(node, context.type_definition, context)
+     0.0ms +      0.0ms (    1) |         }
+     0.2ms +      0.1ms (  288) |         msg = if resolved_type.nil?
+     0.7ms +      0.3ms (  801) |         elsif resolved_type.kind.scalar? &amp;&amp; ast_node.selections.any?
+     0.7ms +      0.3ms (  684) |         elsif resolved_type.kind.fields? &amp;&amp; ast_node.selections.none?
+</div>     3.2ms +      1.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/arguments_validator.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::Argument] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (   44) |           when GraphQL::Language::Nodes::InputObject
+     0.0ms +      0.0ms (   44) |           when GraphQL::Language::Nodes::Directive
+     0.0ms +      0.0ms (   44) |           when GraphQL::Language::Nodes::Field
+     0.1ms +      0.0ms (   44) |             parent_defn = context.field_definition
+     3.0ms +      1.0ms (   44) |           validate_node(parent, node, parent_defn, context)
+     0.0ms +      0.0ms (    2) |         }
+</div>     2.6ms +      0.9ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/arguments_are_defined.rb</a>
+<div class='d-none'>     2.6ms +      0.9ms (   88) |         argument_defn = context.warden.arguments(defn).find { |arg| arg.name == node.name }
+     0.0ms +      0.0ms (   22) |         if argument_defn.nil?
+</div>     2.6ms +      1.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragments_are_on_composite_types.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         HAS_TYPE_CONDITION.each do |node_class|
+     0.0ms +      0.0ms (    2) |           context.visitor[node_class] &lt;&lt; -&gt;(node, parent) {
+     2.6ms +      1.0ms (   41) |             validate_type_is_composite(node, context)
+     0.0ms +      0.0ms (    2) |           }
+     0.0ms +      0.0ms (   41) |         if node_type.nil?
+     1.5ms +      0.5ms (   41) |           type_name = node_type.to_query_string
+     0.1ms +      0.1ms (   82) |           type_def = context.warden.get_type(type_name)
+     0.1ms +      0.0ms (  123) |           if type_def.nil? || !type_def.kind.composite?
+</div>     2.6ms +      0.9ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/variable_usages_are_allowed.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::OperationDefinition] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (    2) |           declared_variables = node.variables.each_with_object({}) { |var, memo| memo[var.name] = var }
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Argument] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (   22) |           node_values = if node.value.is_a?(Array)
+     0.1ms +      0.0ms (   44) |           node_values = node_values.select { |value| value.is_a? GraphQL::Language::Nodes::VariableIdentifier }
+     0.1ms +      0.0ms (   44) |           return if node_values.none?
+     0.0ms +      0.0ms (   22) |           when GraphQL::Language::Nodes::Field
+     0.1ms +      0.0ms (   22) |             arguments = context.field_definition.arguments
+     2.3ms +      0.8ms (   22) |           node_values.each do |node_value|
+     2.3ms +      0.8ms (   22) |             var_defn_ast &amp;&amp; arguments &amp;&amp; validate_usage(arguments, node, var_defn_ast, context)
+     0.0ms +     -0.0ms (    1) |         }
+     0.6ms +      0.2ms (   22) |         var_type = context.schema.type_from_ast(ast_var.type)
+     0.0ms +      0.0ms (   22) |         if var_type.nil?
+     0.0ms +      0.0ms (   22) |         if !ast_var.default_value.nil?
+     0.0ms +      0.0ms (   22) |         arg_defn_type = arg_defn.type
+     0.1ms +      0.0ms (   22) |         var_inner_type = var_type.unwrap
+     0.0ms +      0.0ms (   22) |         arg_inner_type = arg_defn_type.unwrap
+     0.1ms +      0.0ms (   22) |         var_type = wrap_var_type_with_depth_of_arg(var_type, arg_node)
+     0.1ms +      0.0ms (   44) |         if var_inner_type != arg_inner_type
+     0.6ms +      0.2ms (   44) |         elsif list_dimension(var_type) != list_dimension(arg_defn_type)
+     0.4ms +      0.1ms (   22) |         elsif !non_null_levels_match(arg_defn_type, var_type)
+     0.0ms +      0.0ms (   22) |         return var_type unless arg_node_value.is_a?(Array)
+     0.1ms +      0.0ms (  156) |         if type.kind.list?
+     0.0ms +      0.0ms (    6) |           1 + list_dimension(type.of_type)
+     0.1ms +      0.0ms (  144) |         elsif type.kind.non_null?
+     0.2ms +      0.1ms (   28) |           list_dimension(type.of_type)
+     0.1ms +      0.0ms (   74) |         if arg_type.kind.non_null? &amp;&amp; !var_type.kind.non_null?
+     0.1ms +      0.0ms (   80) |         elsif arg_type.kind.wraps? &amp;&amp; var_type.kind.wraps?
+     0.0ms +      0.0ms (   36) |           if var_type.kind.non_null? &amp;&amp; !arg_type.kind.non_null?
+     0.1ms +      0.0ms (    9) |           non_null_levels_match(arg_type.of_type, var_type.of_type)
+</div>     2.0ms +      0.6ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/variables_are_used_and_defined.rb</a>
+<div class='d-none'>     0.2ms +      0.1ms (  152) |         Hash.new {|h, k| h[k] = VariableUsage.new }
+     0.3ms +      0.1ms (   86) |         variable_usages_for_context = Hash.new {|hash, key| hash[key] = variable_hash }
+     0.0ms +      0.0ms (   44) |         spreads_for_context = Hash.new {|hash, key| hash[key] = [] }
+     0.0ms +      0.0ms (   42) |           variable_usages_for_context[node]
+     0.0ms +      0.0ms (   42) |           variable_context_stack.push(node)
+     0.0ms +      0.0ms (   42) |           variable_context_stack.pop
+     0.0ms +      0.0ms (    2) |         context.visitor[GraphQL::Language::Nodes::OperationDefinition] &lt;&lt; push_variable_context_stack
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::OperationDefinition] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (    1) |           var_hash = variable_usages_for_context[node]
+     0.2ms +      0.1ms (    1) |           node.variables.each { |var|
+     0.1ms +      0.0ms (   13) |             var_usage.path = context.path
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::OperationDefinition].leave &lt;&lt; pop_variable_context_stack
+     0.0ms +      0.0ms (    2) |         context.visitor[GraphQL::Language::Nodes::FragmentDefinition] &lt;&lt; push_variable_context_stack
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::FragmentDefinition].leave &lt;&lt; pop_variable_context_stack
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::FragmentSpread] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (   48) |           variable_context = variable_context_stack.last
+     0.0ms +      0.0ms (   48) |           spreads_for_context[variable_context] &lt;&lt; node.name
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::VariableIdentifier] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (   22) |           usage_context = variable_context_stack.last
+     0.0ms +      0.0ms (   22) |           declared_variables = variable_usages_for_context[usage_context]
+     0.1ms +      0.1ms (   22) |           usage.path = context.path
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Document].leave &lt;&lt; -&gt;(node, parent) {
+     0.2ms +      0.0ms (   84) |           fragment_definitions = variable_usages_for_context.select { |key, value| key.is_a?(GraphQL::Language::Nodes::FragmentDefinition) }
+     0.1ms +      0.0ms (   44) |           operation_definitions = variable_usages_for_context.select { |key, value| key.is_a?(GraphQL::Language::Nodes::OperationDefinition) }
+     0.9ms +      0.2ms (    1) |           operation_definitions.each do |node, node_variables|
+     0.8ms +      0.2ms (    1) |             follow_spreads(node, node_variables, spreads_for_context, fragment_definitions, [])
+     0.1ms +      0.0ms (    1) |             create_errors(node_variables, context)
+     0.2ms +      0.0ms (   86) |         spreads = spreads_for_context[node] - visited_fragments
+     2.8ms +      0.7ms (   43) |         spreads.each do |spread_name|
+     0.2ms +      0.0ms (   42) |           fragment_definitions.each do |frag_def_node, vars|
+     0.1ms +      0.0ms (   42) |           variables.each do |name, child_usage|
+     0.0ms +      0.0ms (   21) |             if child_usage.used?
+     2.4ms +      0.6ms (   42) |           follow_spreads(def_node, parent_variables, spreads_for_context, fragment_definitions, visited_fragments)
+     0.0ms +      0.0ms (   27) |           .select { |name, usage| usage.declared? &amp;&amp; !usage.used? }
+     0.0ms +      0.0ms (    1) |           .each { |var_name, usage| context.errors &lt;&lt; message(&quot;Variable $#{var_name} is declared by #{usage.declared_by.name} but not used&quot;, usage.declared_by, path: usage.path) }
+     0.0ms +      0.0ms (   27) |           .select { |name, usage| usage.used? &amp;&amp; !usage.declared? }
+     0.0ms +      0.0ms (    1) |           .each { |var_name, usage| context.errors &lt;&lt; message(&quot;Variable $#{var_name} is used by #{usage.used_by.name} but not declared&quot;, usage.ast_node, path: usage.path) }
+</div>     1.6ms +      0.6ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/language/nodes.rb</a>
+<div class='d-none'>     0.1ms +      0.0ms (   82) |         def to_query_string(printer: GraphQL::Language::Printer.new)
+     1.4ms +      0.5ms (   41) |           printer.print(self)
+     0.1ms +      0.0ms (   66) |           [value].flatten.select { |v| v.is_a?(AbstractNode) }
+</div>     1.4ms +      0.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/variables_are_input_types.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::VariableDefinition] &lt;&lt; -&gt;(node, parent) {
+     1.4ms +      0.5ms (   13) |           validate_is_input_type(node, context)
+     0.0ms +      0.0ms (    1) |         }
+     0.1ms +      0.0ms (   13) |         type_name = get_type_name(node.type)
+     1.1ms +      0.4ms (   26) |         type = context.warden.get_type(type_name)
+     0.0ms +      0.0ms (   13) |         if type.nil?
+     0.0ms +      0.0ms (   26) |         elsif !type.kind.input?
+     0.0ms +      0.0ms (   28) |         if ast_type.respond_to?(:of_type)
+     0.0ms +      0.0ms (   15) |           get_type_name(ast_type.of_type)
+</div>     1.3ms +      0.5ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/language/printer.rb</a>
+<div class='d-none'>     1.3ms +      0.5ms (   41) |         print_node(node, indent: indent)
+     0.2ms +      0.1ms (  123) |         &quot;#{type_name.name}&quot;.dup
+     0.0ms +      0.0ms (   41) |         when Nodes::Document
+     0.0ms +      0.0ms (   41) |         when Nodes::Argument
+     0.0ms +      0.0ms (   41) |         when Nodes::Directive
+     0.0ms +      0.0ms (   41) |         when Nodes::Enum
+     0.0ms +      0.0ms (   41) |         when Nodes::NullValue
+     0.0ms +      0.0ms (   41) |         when Nodes::Field
+     0.0ms +      0.0ms (   41) |         when Nodes::FragmentDefinition
+     0.0ms +      0.0ms (   41) |         when Nodes::FragmentSpread
+     0.0ms +      0.0ms (   41) |         when Nodes::InlineFragment
+     0.0ms +      0.0ms (   41) |         when Nodes::InputObject
+     0.0ms +      0.0ms (   41) |         when Nodes::ListType
+     0.0ms +      0.0ms (   41) |         when Nodes::NonNullType
+     0.0ms +      0.0ms (   41) |         when Nodes::OperationDefinition
+     0.0ms +      0.0ms (   41) |         when Nodes::TypeName
+     0.3ms +      0.1ms (   41) |           print_type_name(node)
+</div>     0.8ms +      0.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/argument_names_are_unique.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Field] &lt;&lt; -&gt;(node, parent) {
+     0.8ms +      0.3ms (  287) |           validate_arguments(node, context)
+     0.0ms +      0.0ms (    1) |         }
+     0.0ms +      0.0ms (    1) |         context.visitor[GraphQL::Language::Nodes::Directive] &lt;&lt; -&gt;(node, parent) {
+     0.0ms +      0.0ms (    1) |         }
+     0.2ms +      0.1ms (  287) |         if argument_defns.any?
+     0.0ms +      0.0ms (   22) |           args_by_name = Hash.new { |h, k| h[k] = [] }
+     0.0ms +      0.0ms (   11) |           argument_defns.each { |a| args_by_name[a.name] &lt;&lt; a }
+     0.0ms +      0.0ms (   11) |           args_by_name.each do |name, defns|
+</div>     0.8ms +      0.3ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/query/variables.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    1) |         @provided_variables = GraphQL::Argument.deep_stringify(provided_variables)
+     0.8ms +      0.3ms (    2) |         @storage = ast_variables.each_with_object({}) do |ast_variable, memo|
+     0.4ms +      0.1ms (   13) |           variable_type = schema.type_from_ast(ast_variable.type)
+     0.0ms +      0.0ms (   13) |           if variable_type.nil?
+     0.0ms +      0.0ms (   13) |             value_was_provided =  @provided_variables.key?(variable_name)
+     0.1ms +      0.0ms (   13) |               validation_result = variable_type.validate_input(provided_value, ctx)
+     0.0ms +      0.0ms (   13) |             if !validation_result.valid?
+     0.2ms +      0.1ms (   26) |               @errors &lt;&lt; GraphQL::Query::VariableValidationError.new(ast_variable, variable_type, provided_value, validation_result)
+</div>     0.7ms +      0.2ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/schema/type_expression.rb</a>
+<div class='d-none'>     0.1ms +      0.0ms (   75) |         when GraphQL::Language::Nodes::TypeName
+     0.0ms +      0.0ms (   35) |           types.fetch(ast_node.name, nil)
+     0.0ms +      0.0ms (   40) |         when GraphQL::Language::Nodes::NonNullType
+     0.2ms +      0.1ms (   35) |           inner_type = build_type(types, ast_inner_type)
+     0.4ms +      0.1ms (   35) |           wrap_type(inner_type, GraphQL::NonNullType)
+     0.0ms +      0.0ms (    5) |         when GraphQL::Language::Nodes::ListType
+     0.0ms +      0.0ms (    5) |           inner_type = build_type(types, ast_inner_type)
+     0.1ms +      0.0ms (    5) |           wrap_type(inner_type, GraphQL::ListType)
+     0.0ms +      0.0ms (   40) |         if type.nil?
+     0.3ms +      0.1ms (   80) |           wrapper.new(of_type: type)
+</div>     0.6ms +      0.2ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/object_type.rb</a>
+<div class='d-none'>     0.6ms +      0.2ms (  686) |       load_interfaces
+</div>     0.5ms +      0.2ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/define/instance_definable.rb</a>
+<div class='d-none'>     0.4ms +      0.1ms (    1) |           revive_dependent_methods
+     0.0ms +      0.0ms (    2) |             defn_proxy = DefinedObjectProxy.new(self)
+     0.0ms +      0.0ms (    1) |             defn.define_keywords.each do |keyword, value|
+     0.0ms +      0.0ms (    2) |               defn_proxy.public_send(keyword, value)
+     0.4ms +      0.1ms (    2) |         self.singleton_class.class_eval {
+     0.4ms +      0.1ms (    1) |           pending_methods.each do |method|
+     0.1ms +      0.0ms (  140) |             undef_method(method.name) if method_defined?(method.name)
+     0.1ms +      0.0ms (   84) |             define_method(method.name, method)
+     0.5ms +      0.2ms (    1) |             define_method(method_name) { |*args, &amp;block|
+     0.4ms +      0.2ms (    1) |               ensure_defined
+     0.1ms +      0.0ms (    1) |               self.send(method_name, *args, &amp;block)
+     0.0ms +      0.0ms (    2) |           if superclass.respond_to?(:dictionary)
+     0.0ms +      0.0ms (    1) |             own_dictionary
+     0.0ms +      0.0ms (    2) |           defn.public_send(@attr_assign_method, value)
+</div>     0.3ms +      0.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/query/variable_validation_error.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (   13) |         msg = &quot;Variable #{variable_ast.name} of type #{type} was provided invalid value&quot;
+     0.0ms +      0.0ms (   13) |         super(msg)
+     0.2ms +      0.1ms (   52) |         super.merge({ &quot;value&quot; =&gt; value, &quot;problems&quot; =&gt; validation_result.problems })
+</div>     0.2ms +      0.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/unique_directives_per_location.rb</a>
+<div class='d-none'>     0.2ms +      0.1ms (    1) |         NODES_WITH_DIRECTIVES.each do |node_class|
+     0.1ms +      0.0ms (   22) |           context.visitor[node_class] &lt;&lt; -&gt;(node, _) {
+     0.0ms +      0.0ms (   22) |           }
+</div>     0.2ms +      0.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/no_definitions_are_present.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::DirectiveDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::SchemaDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::ScalarTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::ObjectTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::InputObjectTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::InterfaceTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::UnionTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::EnumTypeDefinition] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::SchemaExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::ScalarTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::ObjectTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::InputObjectTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::InterfaceTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::UnionTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    2) |         visitor[GraphQL::Language::Nodes::EnumTypeExtension] &lt;&lt; register_node
+     0.0ms +      0.0ms (    1) |         visitor[GraphQL::Language::Nodes::Document].leave &lt;&lt; -&gt;(node, _p) {
+     0.0ms +      0.0ms (    1) |           if schema_definition_nodes.any?
+</div>     0.2ms +      0.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/non_null_type.rb</a>
+<div class='d-none'>     0.0ms +      0.0ms (   36) |       if of_type.is_a?(GraphQL::NonNullType)
+     0.0ms +      0.0ms (   36) |       super()
+     0.0ms +      0.0ms (   13) |       if value.nil?
+     0.0ms +      0.0ms (   26) |         result = GraphQL::Query::InputValidationResult.new
+     0.0ms +      0.0ms (   13) |         result.add_problem(&quot;Expected value to not be null&quot;)
+     0.0ms +      0.0ms (   13) |       &quot;#{of_type.to_s}!&quot;
+</div>     0.1ms +      0.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragments_are_named.rb</a>
+<div class='d-none'>     0.1ms +      0.0ms (   43) |         context.visitor[GraphQL::Language::Nodes::FragmentDefinition] &lt;&lt; -&gt;(node, parent) { validate_name_exists(node, context) }
+     0.0ms +      0.0ms (   41) |         if node.name.nil?
+</div>     0.1ms +      0.1ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/mutation_root_exists.rb</a>
+<div class='d-none'>     0.1ms +      0.1ms (    2) |         return if context.warden.root_type_for_operation(&quot;mutation&quot;)
+</div>     0.1ms +      0.0ms   <a href='#' class='js-lineprof-file'>Users/xuorig/Code/graphql-ruby/lib/graphql/field.rb</a>
+<div class='d-none'>     0.1ms +      0.0ms (    1) |       @clean_type ||= GraphQL::BaseType.resolve_related_type(@dirty_type)
+</div>     0.1ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/schema/field.rb
+     0.1ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/execution/execute.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/execution_error.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/execution/lazy.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/define/defined_object_proxy.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/execution/lazy/resolve.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/schema/member/build_type.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/query/input_validation_result.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/operation_names_are_valid.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragment_names_are_unique.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/variable_names_are_unique.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/argument_literals_are_compatible.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/schema/member/cached_graphql_definition.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/variable_default_values_are_correctly_typed.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/query/context.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/schema/non_null.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/subscription_root_exists.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/literal_validator.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/list_type.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/directives_are_defined.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragments_are_used.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/directives_are_in_valid_locations.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/static_validation/rules/fragments_are_finite.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/schema/member/type_system_helpers.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/query/arguments_cache.rb
+     0.0ms +      0.0ms   Users/xuorig/Code/graphql-ruby/lib/graphql/argument.rb
+</pre></div>

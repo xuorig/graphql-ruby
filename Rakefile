@@ -76,6 +76,12 @@ namespace :bench do
   end
 
   desc "Benchmark the introspection query"
+  task :line_profile do
+    prepare_benchmark
+    GraphQLBenchmark.line_profile
+  end
+
+  desc "Benchmark the introspection query"
   task :query do
     prepare_benchmark
     GraphQLBenchmark.run("query")
