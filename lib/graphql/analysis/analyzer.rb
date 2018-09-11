@@ -49,39 +49,48 @@ module GraphQL
       def on_leave_field(node, parent, visitor)
       end
 
-      alias :on_document :todo
-      alias :on_enum :todo
-      alias :on_enum_type_definition :todo
-      alias :on_enum_type_extension :todo
-      alias :on_enum_value_definition :todo
-      alias :on_fragment_definition :todo
-      alias :on_fragment_spread :todo
-      alias :on_inline_fragment :todo
-      alias :on_input_object :todo
-      alias :on_input_object_type_definition :todo
-      alias :on_input_object_type_extension :todo
-      alias :on_input_value_definition :todo
-      alias :on_interface_type_definition :todo
-      alias :on_interface_type_extension :todo
-      alias :on_list_type :todo
-      alias :on_non_null_type :todo
-      alias :on_null_value :todo
-      alias :on_object_type_definition :todo
-      alias :on_object_type_extension :todo
-      alias :on_operation_definition :todo
-      alias :on_scalar_type_definition :todo
-      alias :on_scalar_type_extension :todo
-      alias :on_schema_definition :todo
-      alias :on_schema_extension :todo
-      alias :on_type_name :todo
-      alias :on_union_type_definition :todo
-      alias :on_union_type_extension :todo
-      alias :on_variable_definition :todo
-      alias :on_variable_identifier :todo
-
-      def todo
-        # TODO: probably convert all these aliases to actual methods
+      def on_enter_operation_definition(node, parent, visitor)
       end
+
+      def on_leave_operation_definition(node, parent, visitor)
+      end
+
+      def on_enter_abstract_node(node, parent, visitor)
+        # TODO: convert all aliases to proper methods
+      end
+
+      def on_leave_abstract_node(node, parent, visitor)
+        # TODO: convert all aliases to proper methods
+      end
+
+      alias :on_document :on_enter_abstract_node
+      alias :on_enum :on_enter_abstract_node
+      alias :on_enum_type_definition :on_enter_abstract_node
+      alias :on_enum_type_extension :on_enter_abstract_node
+      alias :on_enum_value_definition :on_enter_abstract_node
+      alias :on_fragment_definition :on_enter_abstract_node
+      alias :on_fragment_spread :on_enter_abstract_node
+      alias :on_inline_fragment :on_enter_abstract_node
+      alias :on_input_object :on_enter_abstract_node
+      alias :on_input_object_type_definition :on_enter_abstract_node
+      alias :on_input_object_type_extension :on_enter_abstract_node
+      alias :on_input_value_definition :on_enter_abstract_node
+      alias :on_interface_type_definition :on_enter_abstract_node
+      alias :on_interface_type_extension :on_enter_abstract_node
+      alias :on_list_type :on_enter_abstract_node
+      alias :on_non_null_type :on_enter_abstract_node
+      alias :on_null_value :on_enter_abstract_node
+      alias :on_object_type_definition :on_enter_abstract_node
+      alias :on_object_type_extension :on_enter_abstract_node
+      alias :on_scalar_type_definition :on_enter_abstract_node
+      alias :on_scalar_type_extension :on_enter_abstract_node
+      alias :on_schema_definition :on_enter_abstract_node
+      alias :on_schema_extension :on_enter_abstract_node
+      alias :on_type_name :on_enter_abstract_node
+      alias :on_union_type_definition :on_enter_abstract_node
+      alias :on_union_type_extension :on_enter_abstract_node
+      alias :on_variable_definition :on_enter_abstract_node
+      alias :on_variable_identifier :on_enter_abstract_node
 
       protected
 
