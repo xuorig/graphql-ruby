@@ -5,22 +5,17 @@ module GraphQL
 
     # @return [void]
     def analyze_multiplex(multiplex, analyzers)
-      multiplex_analyzers = analyzers.map { |analyzer| analyzer.new(multiplex) }
-
       multiplex.trace("analyze_multiplex", { multiplex: multiplex }) do
+        reducer_states = analyzers.map { |r| ReducerState.new(r, multiplex) }
         query_results = multiplex.queries.map do |query|
           if query.valid?
-            analyze_query(
-              query,
-              query.analyzers,
-              multiplex_analyzers: multiplex_analyzers
-            )
+            analyze_query(query, query.analyzers, multiplex_states: reducer_states)
           else
             []
           end
         end
 
-        multiplex_results = analyzers.map(&:result)
+        multiplex_results = reducer_states.map(&:finalize_reducer)
         multiplex_errors = analysis_errors(multiplex_results)
 
         multiplex.queries.each_with_index do |query, idx|
@@ -42,29 +37,52 @@ module GraphQL
     # @param query [GraphQL::Query]
     # @param analyzers [Array<#call>] Objects that respond to `#call(memo, visit_type, irep_node)`
     # @return [Array<Any>] Results from those analyzers
-    def analyze_query(query, analyzers, multiplex_analyzers: [])
+    def analyze_query(query, analyzers, multiplex_states: [])
       query.trace("analyze_query", { query: query }) do
-        analyzers_to_run = analyzers
-          .map { |analyzer| analyzer.new(query) }
-          .select { |analyzer| analyzer.analyze? }
+        analyzers_to_run = analyzers.select do |analyzer|
+          if analyzer.respond_to?(:analyze?)
+            analyzer.analyze?(query)
+          else
+            true
+          end
+        end
 
-        analyzers_to_run = analyzers_to_run + multiplex_analyzers
-        return unless analyzers_to_run.any?
+        reducer_states = analyzers_to_run.map { |r| ReducerState.new(r, query) } + multiplex_states
 
-        visitor = GraphQL::Analysis::Visitor.new(
-          query: query,
-          analyzers: analyzers_to_run
-        )
+        irep = query.internal_representation
 
-        visitor.visit
+        irep.operation_definitions.each do |name, op_node|
+          reduce_node(op_node, reducer_states)
+        end
 
-        analyzers.map(&:result)
+        reducer_states.map(&:finalize_reducer)
       end
     end
 
     private
 
     module_function
+
+    # Enter the node, visit its children, then leave the node.
+    def reduce_node(irep_node, reducer_states)
+      visit_analyzers(:enter, irep_node, reducer_states)
+
+      irep_node.typed_children.each do |type_defn, children|
+        children.each do |name, child_irep_node|
+          reduce_node(child_irep_node, reducer_states)
+        end
+      end
+
+      visit_analyzers(:leave, irep_node, reducer_states)
+    end
+
+    def visit_analyzers(visit_type, irep_node, reducer_states)
+      reducer_states.each do |reducer_state|
+        next_memo = reducer_state.call(visit_type, irep_node)
+
+        reducer_state.memo = next_memo
+      end
+    end
 
     def analysis_errors(results)
       results.flatten.select { |r| r.is_a?(GraphQL::AnalysisError) }
